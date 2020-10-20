@@ -1,4 +1,7 @@
 # Task Master
+## Change log
+## [1.0.0]
+## 10/19/2020
 ## Day 1
 Task Master is a app that will allow a user to create a task and view all tasks that they have
 created.
