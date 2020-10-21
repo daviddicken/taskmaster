@@ -8,11 +8,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +18,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Intents
+        // setup to be able to save and access data to and from SharedPreferences (local storage)
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
+        final SharedPreferences.Editor preferencesEditor = preferences.edit();
+
+        // check for and display users name
+        TextView name = findViewById(R.id.theName);
+        String namePassedIn = preferences.getString("usersName", "No User Entered");
+
+        name.setText(String.format("%s's tasks:", namePassedIn));
+
 
         // got to settings activity
         ImageButton settingsActivity = MainActivity.this.findViewById(R.id.goToSettings);
@@ -30,10 +36,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent settingsIntent = new Intent(MainActivity.this, Settings.class);
                 MainActivity.this.startActivity(settingsIntent);
-
             }
         });
-
 
         // add Task button
         Button addTask = MainActivity.this.findViewById(R.id.addTask);
@@ -44,10 +48,6 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.startActivity(addTaskIntent);
             }
         });
-
-        // setup to be able to save and access data to and from SharedPreferences (local storage)
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
-        final SharedPreferences.Editor preferenceEditor = preferences.edit();
 
         // go to all tasks button
         Button allTask = MainActivity.this.findViewById(R.id.allTasks);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                TextView getTask = findViewById(R.id.dishesTask);
-               storeTask(getTask, preferenceEditor);
+               storeTask(getTask, preferencesEditor);
                MainActivity.this.startActivity(goToDetailIntent);
             }
         });
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TextView getTask = findViewById(R.id.laundryTask);
-                storeTask(getTask, preferenceEditor);
+                storeTask(getTask, preferencesEditor);
                 MainActivity.this.startActivity(goToDetailIntent);
             }
         });
@@ -93,15 +93,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TextView getTask = findViewById(R.id.sweepTask);
-                storeTask(getTask, preferenceEditor);
+                storeTask(getTask, preferencesEditor);
                 MainActivity.this.startActivity(goToDetailIntent);
             }
         });
     }
 
-    public void storeTask(TextView getTask, SharedPreferences.Editor preferenceEditor){
+    public void storeTask(TextView getTask, SharedPreferences.Editor preferencesEditor){
         String buttonText = getTask.getText().toString();
-        preferenceEditor.putString("taskClicked", buttonText);
-        preferenceEditor.apply();
+        preferencesEditor.putString("taskClicked", buttonText);
+        preferencesEditor.apply();
     }
 }
