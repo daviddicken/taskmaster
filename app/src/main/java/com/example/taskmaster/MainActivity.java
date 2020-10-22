@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         //======== RecyclerView =========================
         RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TaskAdapter(taskList));
+        recyclerView.setAdapter(new TaskAdapter(taskList, this));
 
 
         //================= Buttons =====================
@@ -122,5 +122,16 @@ public class MainActivity extends AppCompatActivity {
         String buttonText = getTask.getText().toString();
         preferencesEditor.putString("taskClicked", buttonText);
         preferencesEditor.apply();
+    }
+
+    @Override
+    public void taskListener(Task task) {
+        Intent intent = new Intent(MainActivity.this, TaskDetail.class);
+        //final Intent goToDetailIntent = new Intent(MainActivity.this, TaskDetail.class);
+
+        intent.putExtra("taskTitle", task.title);
+        intent.putExtra("taskBody", task.body);
+        intent.putExtra("taskState", task.state);
+        this.startActivity(intent);
     }
 }

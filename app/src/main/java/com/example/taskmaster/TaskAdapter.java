@@ -14,21 +14,23 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     //============ Constructor ================
     public ArrayList<Task> tasks;
+    public OnInteractWithTaskListener listener;
 
-    public TaskAdapter(ArrayList<Task> tasks){
+    public TaskAdapter(ArrayList<Task> tasks, OnInteractWithTaskListener listener){
         this.tasks = tasks;
+        this.listener = listener;
     }
     //-----------------------------------------
 
     // view holder for passing data to a fragment
     public static class TaskViewHolder extends RecyclerView.ViewHolder{
         public Task task;
+        public View taskView;   // store view so it is modable externally
 
         public TaskViewHolder(@NonNull View taskView){
             super(taskView);
-            TextView taskTitleView = taskView.findViewById(R.id.titleLabel);
-            TextView taskBodyView = taskView.findViewById(R.id.bodyLabel);
-            TextView taskStateView = taskView.findViewById(R.id.stateLabel);
+            this.taskView = taskView;
+
 
         }
     }
@@ -40,19 +42,39 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
        View view = LayoutInflater.from(parent.getContext())
                .inflate(R.layout.fragment_task, parent, false);
 
-       TaskViewHolder viewHolder = new TaskViewHolder(view);
+       final TaskViewHolder viewHolder = new TaskViewHolder(view);
+
+       view.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               System.out.println(viewHolder.task.title);
+               listener.taskListener(viewHolder.task);
+           }
+       });
         return viewHolder;
+    }
+
+    //============ Listener interface =================
+    public static interface OnInteractWithTaskListener{
+        public void taskListener(Task task);
     }
 
     @Override // gets called when a class is attached to a fragment
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         holder.task = tasks.get(position);
 
+        TextView taskTitleView = holder.taskView.findViewById(R.id.titleLabel);
+        TextView taskBodyView = holder.taskView.findViewById(R.id.bodyLabel);
+        TextView taskStateView = holder.taskView.findViewById(R.id.stateLabel);
+        taskTitleView.setText(holder.task.getTitle());
+        taskBodyView.setText(holder.task.getBody());
+        taskStateView.setText(holder.task.getState());
+
     }
 
     @Override // tells how many fragments to show on the screen
     public int getItemCount() {
-        return 6;
+        return tasks.size();
     }
 
 }
