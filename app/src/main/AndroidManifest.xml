@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.taskmaster">
+    package="com.daviddicken.taskmaster">
 
     <application
         android:allowBackup="true"
@@ -9,10 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Settings"></activity>
-        <activity android:name=".TaskDetail" />
+        <activity android:name="com.daviddicken.taskmaster.Settings"></activity>
+        <activity android:name="com.daviddicken.taskmaster.TaskDetail" />
 
-        <activity android:name=".AllTasks">
+        <activity android:name="com.daviddicken.taskmaster.AllTasks">
             <intent-filter>
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddATask">
+        <activity android:name="com.daviddicken.taskmaster.AddATask">
             <intent-filter>
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.daviddicken.taskmaster.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

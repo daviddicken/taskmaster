@@ -1,4 +1,4 @@
-package com.example.taskmaster;
+package com.daviddicken.taskmaster;
 
 import android.view.LayoutInflater;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.example.taskmaster;
+package com.daviddicken.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
