@@ -2,6 +2,8 @@ package com.example.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +32,22 @@ public class MainActivity extends AppCompatActivity {
 
         name.setText(String.format("%s's tasks:", namePassedIn));
 
+        //========= ArrayList of tasks =================
+        ArrayList<Task> taskList = new ArrayList<>();
+        taskList.add(new Task("Dishes", "Wash, dry, and put away", "new"));
+        taskList.add(new Task("Laundry", "Wash, dry, fold and put away", "new"));
+        taskList.add(new Task("Sweep", "Kitchen & Breakfast nook", "new"));
+        taskList.add(new Task("More Dishes", "Wash, dry, and put away", "new"));
+        taskList.add(new Task("More Laundry", "Wash, dry, fold and put away", "new"));
+        taskList.add(new Task("More Sweeping", "Kitchen & Breakfast nook", "new"));
 
+        //======== RecyclerView =========================
+        RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new TaskAdapter());
+
+
+        //================= Buttons =====================
         // got to settings activity
         ImageButton settingsActivity = MainActivity.this.findViewById(R.id.goToSettings);
         settingsActivity.setOnClickListener(new View.OnClickListener() {

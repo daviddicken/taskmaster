@@ -27,10 +27,10 @@
         android:background="#B5AFAF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.289"
+        app:layout_constraintVertical_bias="0.331"
         app:srcCompat="@android:drawable/divider_horizontal_dark" />
 
     <Button
@@ -61,12 +61,13 @@
         android:id="@+id/theName"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="TextView"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/dishesTask"
         app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
@@ -75,30 +76,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dishes"
-        app:layout_constraintBottom_toTopOf="@+id/laundryTask"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        tools:layout_editor_absoluteX="241dp"
+        tools:layout_editor_absoluteY="83dp" />
 
     <Button
         android:id="@+id/laundryTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Laundry"
-        app:layout_constraintBottom_toTopOf="@+id/sweepTask"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/dishesTask" />
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="83dp" />
 
     <Button
         android:id="@+id/sweepTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sweep"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/laundryTask" />
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="83dp" />
 
     <ImageButton
         android:id="@+id/goToSettings"
@@ -120,5 +115,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goToSettings"
         app:layout_constraintVertical_bias="0.304" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTaskList"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/theName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
