@@ -78,51 +78,51 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
             }
         });
 
-        // Intent to got to Task Detail activity
-        final Intent goToDetailIntent = new Intent(MainActivity.this, TaskDetail.class);
-
-
-
-        // dishes button
-        Button addDishes = this.findViewById(R.id.dishesTask);
-        addDishes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-               TextView getTask = findViewById(R.id.dishesTask);
-               storeTask(getTask, preferencesEditor);
-               MainActivity.this.startActivity(goToDetailIntent);
-            }
-        });
-
-        // laundry button
-        Button addLaundry = this.findViewById(R.id.laundryTask);
-        addLaundry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView getTask = findViewById(R.id.laundryTask);
-                storeTask(getTask, preferencesEditor);
-                MainActivity.this.startActivity(goToDetailIntent);
-            }
-        });
-
-        // dishes button
-        Button addSweep = this.findViewById(R.id.sweepTask);
-        addSweep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView getTask = findViewById(R.id.sweepTask);
-                storeTask(getTask, preferencesEditor);
-                MainActivity.this.startActivity(goToDetailIntent);
-            }
-        });
+//        // Intent to got to Task Detail activity
+//        final Intent goToDetailIntent = new Intent(MainActivity.this, TaskDetail.class);
+//
+//
+//
+//        // dishes button
+//        Button addDishes = this.findViewById(R.id.dishesTask);
+//        addDishes.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//               TextView getTask = findViewById(R.id.dishesTask);
+//               storeTask(getTask, preferencesEditor);
+//               MainActivity.this.startActivity(goToDetailIntent);
+//            }
+//        });
+//
+//        // laundry button
+//        Button addLaundry = this.findViewById(R.id.laundryTask);
+//        addLaundry.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TextView getTask = findViewById(R.id.laundryTask);
+//                storeTask(getTask, preferencesEditor);
+//                MainActivity.this.startActivity(goToDetailIntent);
+//            }
+//        });
+//
+//        // dishes button
+//        Button addSweep = this.findViewById(R.id.sweepTask);
+//        addSweep.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TextView getTask = findViewById(R.id.sweepTask);
+//                storeTask(getTask, preferencesEditor);
+//                MainActivity.this.startActivity(goToDetailIntent);
+//            }
+//        });
     }
 
-    public void storeTask(TextView getTask, SharedPreferences.Editor preferencesEditor){
-        String buttonText = getTask.getText().toString();
-        preferencesEditor.putString("taskClicked", buttonText);
-        preferencesEditor.apply();
-    }
+//    public void storeTask(TextView getTask, SharedPreferences.Editor preferencesEditor){
+//        String buttonText = getTask.getText().toString();
+//        preferencesEditor.putString("taskClicked", buttonText);
+//        preferencesEditor.apply();
+//    }
 
     @Override
     public void taskListener(Task task) {

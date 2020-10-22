@@ -1,6 +1,6 @@
 # Task Master
 ## Change log
-## [1.0.1]
+## [1.0.2]
 
 
 ## 10/19/2020
@@ -14,7 +14,7 @@ take the user home. On the add task page there is a submit button that has been 
 a toast informing the user that the task was submitted.
 
 Stay tuned, more is to come :)
-![Screenshot of day one home page](screenshots/lab26Screenshot.PNG)
+![Screenshot of day one home activity](screenshots/lab26Screenshot.PNG)
 
 ## 10/20/2020
 ## Change log [1.0.1]
@@ -24,6 +24,13 @@ the main activity. There has also been three hardcoded tasks buttons added to th
 task button is clicked the user will be directed to a task details page and the title of the page
 will be populated with the text from the button that was clicked.
 
-![Screenshot daytwo Task Detail Page](screenshots/lab27screenShot.PNG)
+![Screenshot daytwo Task Detail activity](screenshots/lab27screenShot.PNG)
 
+## 10/21/2020
+## Change log [1.0.1}
+## Day 3
+Today a recyclerView was added to display a list of tasks on the home page that is scrollable. Clicking
+On a task will take you to the task details page where a description, status, and task title are displayed.
+
+![Screenshot day 3 home activity](screenshots/Day3HomeScreenShot.PNG)
 

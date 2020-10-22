@@ -71,30 +71,6 @@
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
-    <Button
-        android:id="@+id/dishesTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dishes"
-        tools:layout_editor_absoluteX="241dp"
-        tools:layout_editor_absoluteY="83dp" />
-
-    <Button
-        android:id="@+id/laundryTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Laundry"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="83dp" />
-
-    <Button
-        android:id="@+id/sweepTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sweep"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="83dp" />
-
     <ImageButton
         android:id="@+id/goToSettings"
         android:layout_width="wrap_content"
