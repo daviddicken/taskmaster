@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         //======== RecyclerView =========================
         RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TaskAdapter());
+        recyclerView.setAdapter(new TaskAdapter(taskList));
 
 
         //================= Buttons =====================
