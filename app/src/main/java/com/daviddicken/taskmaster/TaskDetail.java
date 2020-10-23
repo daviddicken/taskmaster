@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 public class TaskDetail extends AppCompatActivity {
@@ -25,5 +26,16 @@ public class TaskDetail extends AppCompatActivity {
         TextView state = findViewById(R.id.taskState);
         state.setText(taskState);
 
+
+        //========= Home arrow in action bar =========
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(homeIntent, 0);
+        return true;
     }
 }

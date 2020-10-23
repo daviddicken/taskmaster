@@ -1,8 +1,15 @@
 package com.daviddicken.taskmaster;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Task {
 
     //======== Task class ===========
+    @PrimaryKey(autoGenerate = true)
+    long id;
+
     String title;
     String body;
     String state;
@@ -10,7 +17,7 @@ public class Task {
     public Task(String title, String body, String state) {
         this.title = title;
         this.body = body;
-        //possible states "new", "assigned", "in progress"
+        //possible states "new", "assigned", "in progress", "completed"
         this.state = state;
     }
 

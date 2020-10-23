@@ -1,6 +1,6 @@
 # Task Master
 ## Change log
-## [1.0.2]
+## [1.1.0]
 
 
 ## 10/19/2020
@@ -16,6 +16,7 @@ a toast informing the user that the task was submitted.
 Stay tuned, more is to come :)
 ![Screenshot of day one home activity](screenshots/lab26Screenshot.PNG)
 
+--------------------------
 ## 10/20/2020
 ## Change log [1.0.1]
 ## Day 2
@@ -26,11 +27,25 @@ will be populated with the text from the button that was clicked.
 
 ![Screenshot daytwo Task Detail activity](screenshots/lab27screenShot.PNG)
 
+------------------------
 ## 10/21/2020
-## Change log [1.0.1}
+## Change log [1.0.2]
 ## Day 3
 Today a recyclerView was added to display a list of tasks on the home page that is scrollable. Clicking
 On a task will take you to the task details page where a description, status, and task title are displayed.
 
 ![Screenshot day 3 home activity](screenshots/Day3HomeScreenShot.PNG)
+
+-----------------------
+## 10/21/2020
+## Change log [1.1.0]
+Day 4
+Added the ability to save and pull from a database. Main page displays tasks that are found in the database.
+And add a task page adds a task entered by the user to the database
+
+![Screenshot day 3 home activity](screenshots/Day4Screenshot)
+
+
+
+
 
