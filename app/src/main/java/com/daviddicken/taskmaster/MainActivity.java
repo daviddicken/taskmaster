@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +16,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener{
+public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
+
+    Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +35,18 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
         name.setText(String.format("%s's tasks:", namePassedIn));
 
-        //========= ArrayList of tasks =================
-        ArrayList<Task> taskList = new ArrayList<>();
-        taskList.add(new Task("Dishes", "Wash, dry, and put away", "new"));
-        taskList.add(new Task("Laundry", "Wash, dry, fold and put away", "new"));
-        taskList.add(new Task("Sweep", "Kitchen & Breakfast nook", "new"));
-        taskList.add(new Task("More Dishes", "Wash, dry, and put away", "new"));
-        taskList.add(new Task("More Laundry", "Wash, dry, fold and put away", "new"));
-        taskList.add(new Task("More Sweeping", "Kitchen & Breakfast nook", "new"));
+        //================ database stuff ============
+        // database build
+        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
+                .allowMainThreadQueries()
+                .build();
+
+        ArrayList<Task> taskDb = (ArrayList<Task>) database.taskDao().getDbTasks();
 
         //======== RecyclerView =========================
         RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TaskAdapter(taskList, this));
+        recyclerView.setAdapter(new TaskAdapter(taskDb, this));
 
 
         //================= Buttons =====================
@@ -77,61 +79,15 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
                 MainActivity.this.startActivity(allTaskIntent);
             }
         });
-
-//        // Intent to got to Task Detail activity
-//        final Intent goToDetailIntent = new Intent(MainActivity.this, TaskDetail.class);
-//
-//
-//
-//        // dishes button
-//        Button addDishes = this.findViewById(R.id.dishesTask);
-//        addDishes.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//               TextView getTask = findViewById(R.id.dishesTask);
-//               storeTask(getTask, preferencesEditor);
-//               MainActivity.this.startActivity(goToDetailIntent);
-//            }
-//        });
-//
-//        // laundry button
-//        Button addLaundry = this.findViewById(R.id.laundryTask);
-//        addLaundry.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TextView getTask = findViewById(R.id.laundryTask);
-//                storeTask(getTask, preferencesEditor);
-//                MainActivity.this.startActivity(goToDetailIntent);
-//            }
-//        });
-//
-//        // dishes button
-//        Button addSweep = this.findViewById(R.id.sweepTask);
-//        addSweep.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TextView getTask = findViewById(R.id.sweepTask);
-//                storeTask(getTask, preferencesEditor);
-//                MainActivity.this.startActivity(goToDetailIntent);
-//            }
-//        });
     }
-
-//    public void storeTask(TextView getTask, SharedPreferences.Editor preferencesEditor){
-//        String buttonText = getTask.getText().toString();
-//        preferencesEditor.putString("taskClicked", buttonText);
-//        preferencesEditor.apply();
-//    }
 
     @Override
     public void taskListener(Task task) {
         Intent intent = new Intent(MainActivity.this, TaskDetail.class);
-        //final Intent goToDetailIntent = new Intent(MainActivity.this, TaskDetail.class);
 
-        intent.putExtra("taskTitle", task.title);
-        intent.putExtra("taskBody", task.body);
-        intent.putExtra("taskState", task.state);
+        intent.putExtra("taskTitle", task.getTitle());
+        intent.putExtra("taskBody", task.getBody());
+        intent.putExtra("taskState", task.getState());
         this.startActivity(intent);
     }
 }
