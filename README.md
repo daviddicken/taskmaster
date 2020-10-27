@@ -37,13 +37,25 @@ On a task will take you to the task details page where a description, status, an
 ![Screenshot day 3 home activity](screenshots/Day3HomeScreenShot.PNG)
 
 -----------------------
-## 10/21/2020
+## 10/22/2020
 ## Change log [1.1.0]
 Day 4
 Added the ability to save and pull from a database. Main page displays tasks that are found in the database.
 And add a task page adds a task entered by the user to the database
 
 ![Screenshot day 3 home activity](screenshots/Day4Screenshot)
+
+-----------------------
+## 10/26/2020
+## Change log [1.1.0]
+Day 5
+Added test to test that username can be enter and then it will display on main activity,
+test that a new task can be created and it will display on main activity,
+test that you can click on a task on main activity and details about that task will be
+displayed on task details activity
+
+
+
 
 
 
