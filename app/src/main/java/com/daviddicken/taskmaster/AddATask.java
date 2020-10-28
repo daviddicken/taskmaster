@@ -6,13 +6,17 @@ import androidx.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
+
 
 public class AddATask extends AppCompatActivity {
     Database database;
@@ -50,10 +54,18 @@ public class AddATask extends AppCompatActivity {
                 TextView getTaskBody = AddATask.this.findViewById(R.id.newTaskBody);
                 String body = getTaskBody.getText().toString();
 
-                Task newTask = new Task(name, body, "new");
+                Task newThingToDo = Task.builder()
+                        .title(name)
+                        .description(body)
+                        .status("new").build();
+
+                //========= Send to online db ===========
+                Amplify.API.mutate(ModelMutation.create(newThingToDo),
+                        response -> Log.i("AddTask", "Added " + name),
+                        error -> Log.e("AddTask", "Unable to add task"));
 
                 //========= Save to database =============
-                database.taskDao().saveToDb(newTask);
+                //database.taskDao().saveToDb(newThingToDo);
                 //========= Toast and Go =================
                 toast.show();
                 Intent goHomeIntent = new Intent(AddATask.this, MainActivity.class);

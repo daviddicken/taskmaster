@@ -8,23 +8,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.datastore.generated.model.Task;
+
 import java.util.ArrayList;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder>{
 
     //============ Constructor ================
-    public ArrayList<Task> tasks;
+    public ArrayList<Task> thingToDos;
     public OnInteractWithTaskListener listener;
 
-    public TaskAdapter(ArrayList<Task> tasks, OnInteractWithTaskListener listener){
-        this.tasks = tasks;
+    public TaskAdapter(ArrayList<Task> thingToDos, OnInteractWithTaskListener listener){
+        this.thingToDos = thingToDos;
         this.listener = listener;
     }
     //-----------------------------------------
 
     // view holder for passing data to a fragment
     public static class TaskViewHolder extends RecyclerView.ViewHolder{
-        public Task task;
+        public Task thingToDo;
         public View taskView;   // store view so it is modable externally
 
         public TaskViewHolder(@NonNull View taskView){
@@ -48,7 +50,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
            @Override
            public void onClick(View v) {
               // System.out.println(viewHolder.task.getTitle());
-               listener.taskListener(viewHolder.task);
+               listener.taskListener(viewHolder.thingToDo);
            }
        });
         return viewHolder;
@@ -56,25 +58,25 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     //============ Listener interface =================
     public static interface OnInteractWithTaskListener{
-        public void taskListener(Task task);
+        public void taskListener(Task thingToDo);
     }
 
     @Override // gets called when a class is attached to a fragment
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        holder.task = tasks.get(position);
+        holder.thingToDo = thingToDos.get(position);
 
         TextView taskTitleView = holder.taskView.findViewById(R.id.titleLabel);
         TextView taskBodyView = holder.taskView.findViewById(R.id.bodyLabel);
         TextView taskStateView = holder.taskView.findViewById(R.id.stateLabel);
-        taskTitleView.setText(holder.task.getTitle());
-        taskBodyView.setText(holder.task.getBody());
-        taskStateView.setText(holder.task.getState());
+        taskTitleView.setText(holder.thingToDo.getTitle());
+        taskBodyView.setText(holder.thingToDo.getDescription());
+        taskStateView.setText(holder.thingToDo.getStatus());
 
     }
 
     @Override // tells how many fragments to show on the screen
     public int getItemCount() {
-        return tasks.size();
+        return thingToDos.size();
     }
 
 }

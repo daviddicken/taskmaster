@@ -1,29 +1,60 @@
 package com.daviddicken.taskmaster;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
 
     Database database;
+    ArrayList<Task> tasks;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // initialize Amplify API
+        try {
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
+
+        } catch (AmplifyException e) {
+            Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
+        }
+
+
+
+        //ArrayList<Task> taskDb = (ArrayList<Task>) database.taskDao().getDbTasks(); // TODO check name
 
         // setup to be able to save and access data to and from SharedPreferences (local storage)
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
@@ -38,15 +69,35 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         //================ database stuff ============
         // database build
         database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
+                //.fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build();
 
-        ArrayList<Task> taskDb = (ArrayList<Task>) database.taskDao().getDbTasks();
-
         //======== RecyclerView =========================
+        tasks = new ArrayList<Task>();
         RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new TaskAdapter(taskDb, this));
+        recyclerView.setAdapter(new TaskAdapter(tasks, this));
+
+        Handler handler = new Handler(Looper.getMainLooper(),
+                new Handler.Callback() {
+                    @Override
+                    public boolean handleMessage(@NonNull Message msg) {
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        return false;
+                    }
+                });
+
+        Amplify.API.query(
+                ModelQuery.list(Task.class),
+                response -> {
+                    for(Task task : response.getData()) {
+                        tasks.add(task);
+                    }
+                    handler.sendEmptyMessage(1);
+                    Log.i("AmplifyQuery", "Number of items from dynamodb" + tasks.size());
+                },
+                error -> Log.i("AmplifyQuery", "Failed to get items"));
 
 
         //================= Buttons =====================
@@ -86,8 +137,8 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         Intent intent = new Intent(MainActivity.this, TaskDetail.class);
 
         intent.putExtra("taskTitle", task.getTitle());
-        intent.putExtra("taskBody", task.getBody());
-        intent.putExtra("taskState", task.getState());
+        intent.putExtra("taskBody", task.getDescription());
+        intent.putExtra("taskState", task.getStatus());
         this.startActivity(intent);
     }
 }
