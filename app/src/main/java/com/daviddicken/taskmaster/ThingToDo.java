@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class Task {
+public class ThingToDo {
 
     //======== Task class ===========
     @PrimaryKey(autoGenerate = true)
@@ -14,7 +14,7 @@ public class Task {
     String body;
     String state;
 
-    public Task(String title, String body, String state) {
+    public ThingToDo(String title, String body, String state) {
         this.title = title;
         this.body = body;
         //possible states "new", "assigned", "in progress", "completed"
