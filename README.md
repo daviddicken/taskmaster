@@ -1,6 +1,6 @@
 # Task Master
 ## Change log
-## [1.1.0]
+## [1.2.0]
 
 
 ## 10/19/2020
@@ -43,7 +43,7 @@ Day 4
 Added the ability to save and pull from a database. Main page displays thingToDos that are found in the database.
 And add a thingToDo page adds a thingToDo entered by the user to the database
 
-![Screenshot day 3 home activity](screenshots/Day4Screenshot)
+![Screenshot day 4](screenshots/Day4Screenshot.png)
 
 -----------------------
 ## 10/26/2020
@@ -55,7 +55,12 @@ test that you can click on a thingToDo on main activity and details about that t
 displayed on thingToDo details activity
 
 -----------------------
+## 10/27/2020
+## Change log [1.2.0]
+Day 6
+Changed database that the app was saving to and reading from to an online database (DynamoDB).
 
+![Screenshot day 6](screenshots/day6Screenshot.PNG)
 
 
 
