@@ -35,10 +35,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
 
     Database database;
-    NotificationChannel notificationChannel;
-    NotificationManager notificationManager;
     ArrayList<Task> tasks;
-    RecyclerView recyclerView;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -51,31 +48,11 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
 
-           // Log.i("MainActivityAmplify", "Initialized Amplify");
-
-            // create task
-
-           // com.amplifyframework.datastore.generated.model.Task task;
-           // task = com.amplifyframework.datastore.generated.model.Task.builder()
-//            Task task = Task.builder()
-//                    .title("Hardcoding")
-//                    .description("Hardcode some stuff")
-//                    .status("new").build();
-
-            //send to internet db
-//            Amplify.API.mutate(ModelMutation.create(task),
-//                    response -> Log.i("MainActivityAmplify", "Made a hard task."),
-//                    error -> Log.e("MainActivityAmplify", "Failed to create a hard task"));
-
         } catch (AmplifyException e) {
             Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
         }
 
-        // database build
-        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
-                //.fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build();
+
 
         //ArrayList<Task> taskDb = (ArrayList<Task>) database.taskDao().getDbTasks(); // TODO check name
 
@@ -90,7 +67,11 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         name.setText(String.format("%s's tasks:", namePassedIn));
 
         //================ database stuff ============
-
+        // database build
+        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
+                //.fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
 
         //======== RecyclerView =========================
         tasks = new ArrayList<Task>();

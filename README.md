@@ -54,6 +54,8 @@ test that a new thingToDo can be created and it will display on main activity,
 test that you can click on a thingToDo on main activity and details about that thingToDo will be
 displayed on thingToDo details activity
 
+-----------------------
+
 
 
 
