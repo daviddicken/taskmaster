@@ -39,7 +39,7 @@
         android:layout_marginTop="72dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Do Something"
+        android:text="@string/do_something"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newTaskTitle" />
 
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginTop="72dp"
-        android:text="ADD TASK"
+        android:text="@string/add_task"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newTaskBody" />
 
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
-        android:text="Total thingToDo:"
+        android:text="@string/total_thingtodo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/submitTask"
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:text="Task title"
+        android:text="@string/task_title"
         app:layout_constraintBottom_toTopOf="@+id/newTaskTitle"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -92,4 +92,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/totalTask"
         app:layout_constraintTop_toTopOf="@+id/totalTask" />
+
+    <RadioGroup
+        android:id="@+id/buttonBox"
+        android:layout_width="158dp"
+        android:layout_height="97dp"
+        android:layout_marginStart="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/submitTask"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.392"
+        app:layout_constraintStart_toEndOf="@+id/submitTask"
+        app:layout_constraintTop_toTopOf="@+id/submitTask"
+        app:layout_constraintVertical_bias="0.441">
+
+        <RadioButton
+            android:id="@+id/redRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="#F44336"
+            android:text="Red Team"
+            android:textColor="#E91E63"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/greenRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="#17E320"
+            android:text="Green Team"
+            android:textColor="#96E639"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/blueRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="#208FE6"
+            android:text="Blue Team"
+            android:textColor="#2196F3"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
