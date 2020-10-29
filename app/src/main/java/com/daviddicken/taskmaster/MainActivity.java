@@ -29,13 +29,30 @@ import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
+import com.amplifyframework.datastore.generated.model.Team;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
 
-    Database database;
+    //Database database;
     ArrayList<Task> tasks;
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // check for and display user name
+        TextView name = findViewById(R.id.theName);
+        String namePassedIn = preferences.getString("usersName", "No User Entered");
+        name.setText(String.format("%s's tasks:", namePassedIn));
+
+
+
+
+
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -43,10 +60,13 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         // initialize Amplify API
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.configure(getApplicationContext());
+            //createTeams();
 
         } catch (AmplifyException e) {
             Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
@@ -68,13 +88,13 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
         //================ database stuff ============
         // database build
-        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
-                //.fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build();
+//        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
+//                //.fallbackToDestructiveMigration()
+//                .allowMainThreadQueries()
+//                .build();
 
         //======== RecyclerView =========================
-        tasks = new ArrayList<Task>();
+        tasks = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new TaskAdapter(tasks, this));
@@ -87,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
                         return false;
                     }
                 });
-
+//===============================================================
         Amplify.API.query(
                 ModelQuery.list(Task.class),
                 response -> {
@@ -140,5 +160,28 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         intent.putExtra("taskBody", task.getDescription());
         intent.putExtra("taskState", task.getStatus());
         this.startActivity(intent);
+    }
+
+    public void createTeams(){
+        Team teamRed = Team.builder()
+                .name("Red Team").build();
+
+        Team teamBlue = Team.builder()
+                .name("Blue Team").build();
+
+        Team teamGreen = Team.builder()
+                .name("Green Team").build();
+
+        Amplify.API.mutate(ModelMutation.create(teamRed),
+        response -> Log.i("Amplify", "Team created"),
+        error -> Log.e("Amplify", "Team created"));
+
+        Amplify.API.mutate(ModelMutation.create(teamBlue),
+                response -> Log.i("Amplify", "Team created"),
+                error -> Log.e("Amplify", "Team created"));
+
+        Amplify.API.mutate(ModelMutation.create(teamGreen),
+                response -> Log.i("Amplify", "Team created"),
+                error -> Log.e("Amplify", "Team created"));
     }
 }
