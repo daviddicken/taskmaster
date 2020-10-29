@@ -1,6 +1,6 @@
 # Task Master
 ## Change log
-## [1.2.0]
+## [2.0.0]
 
 
 ## 10/19/2020
@@ -62,6 +62,14 @@ Changed database that the app was saving to and reading from to an online databa
 
 ![Screenshot day 6](screenshots/day6Screenshot.PNG)
 
+----------------------
+## 10/28/2020
+## change log [2.0.0]
+Day 7
+Added three teams and the ability to assign new tasks to a team. And the ability for a user to select
+a team when the enter their name. Only the task for that users team will be displayed on the main page.
+
+![Screenshot day 7](screenshots/day7Screenshot.PNG
 
 
 

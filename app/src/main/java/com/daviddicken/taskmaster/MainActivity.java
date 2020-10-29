@@ -37,23 +37,22 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
     //Database database;
     ArrayList<Task> tasks;
+    SharedPreferences preferences;
 
     @Override
     public void onResume(){
         super.onResume();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ArrayList<Team> teams = new ArrayList<>();
-
-        //========== Get Teams ========================
-        Amplify.API.query(ModelQuery.list(Team.class),
-                response -> {
-                    for(Team team : response.getData()){
-                        teams.add(team);
-                    } },
-                error -> Log.e("AmplifyAddTask", "failed getting teams"));
-
-
+//        ArrayList<Team> teams = new ArrayList<>();
+//
+//        //========== Get Teams ========================
+//        Amplify.API.query(ModelQuery.list(Team.class),
+//                response -> {
+//                    for(Team team : response.getData()){
+//                        teams.add(team);
+//                    } },
+//                error -> Log.e("AmplifyAddTask", "failed getting teams"));
 
         // check for and display user name
         TextView name = findViewById(R.id.theName);
@@ -61,12 +60,12 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         name.setText(String.format("%s's tasks:", namePassedIn));
         String userTeam = preferences.getString("userTeam", "No team selected");
 
-        Team chosenTeam = null;
-        for(int i = 0; i < teams.size(); i++) {
-            if (teams.get(i).getName().equals(userTeam)) {
-                chosenTeam = teams.get(i);
-            }
-        }
+//        Team chosenTeam = null;
+//        for(int i = 0; i < teams.size(); i++) {
+//            if (teams.get(i).getName().equals(userTeam)) {
+//                chosenTeam = teams.get(i);
+//            }
+//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -86,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         } catch (AmplifyException e) {
             Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
         }
-
-
 
         //ArrayList<Task> taskDb = (ArrayList<Task>) database.taskDao().getDbTasks(); // TODO check name
 
@@ -126,9 +123,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         Amplify.API.query(
                 ModelQuery.list(Task.class),
                 response -> {
-                    for(Task task : response.getData()) {
-
-                        if (preferences.contains("userTeam")){
+                    for(Task task : response.getData()) {  //populate list for recyclerview.
+                        System.out.println(preferences.getString("userTeam", "nope"));
+                        // Paul figured this one out :)
+                        if (preferences.contains("userTeam")){ // check that a user team exist before trying to find teams task
                             if (task.taskForTeam.getName().equals(preferences.getString("userTeam", " "))) {
                                 tasks.add(task);
                             }
