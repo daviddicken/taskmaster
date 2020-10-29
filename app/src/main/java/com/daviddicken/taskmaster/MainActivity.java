@@ -43,15 +43,30 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         super.onResume();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        ArrayList<Team> teams = new ArrayList<>();
+
+        //========== Get Teams ========================
+        Amplify.API.query(ModelQuery.list(Team.class),
+                response -> {
+                    for(Team team : response.getData()){
+                        teams.add(team);
+                    } },
+                error -> Log.e("AmplifyAddTask", "failed getting teams"));
+
+
+
         // check for and display user name
         TextView name = findViewById(R.id.theName);
         String namePassedIn = preferences.getString("usersName", "No User Entered");
         name.setText(String.format("%s's tasks:", namePassedIn));
+        String userTeam = preferences.getString("userTeam", "No team selected");
 
-
-
-
-
+        Team chosenTeam = null;
+        for(int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getName().equals(userTeam)) {
+                chosenTeam = teams.get(i);
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -112,7 +127,15 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
                 ModelQuery.list(Task.class),
                 response -> {
                     for(Task task : response.getData()) {
-                        tasks.add(task);
+
+                        if (preferences.contains("userTeam")){
+                            if (task.taskForTeam.getName().equals(preferences.getString("userTeam", " "))) {
+                                tasks.add(task);
+                            }
+                    }else {
+                            tasks.add(task);
+                        }
+
                     }
                     handler.sendEmptyMessage(1);
                     Log.i("AmplifyQuery", "Number of items from dynamodb" + tasks.size());

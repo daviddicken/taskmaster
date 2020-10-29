@@ -44,4 +44,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.309" />
+
+    <RadioGroup
+        android:id="@+id/settingBox"
+        android:layout_width="142dp"
+        android:layout_height="96dp"
+        app:layout_constraintBottom_toTopOf="@+id/enteredName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="#F44336"
+            android:text="Red Team"
+            android:textColor="#F42112"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#54E615"
+            android:buttonTint="#0FF318"
+            android:text="Green Team"
+            android:textColor="#19F622"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/blue"
+            android:layout_width="121dp"
+            android:layout_height="wrap_content"
+            android:buttonTint="#2196F3"
+            android:text="Blue Team"
+            android:textColor="#2196F3"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
