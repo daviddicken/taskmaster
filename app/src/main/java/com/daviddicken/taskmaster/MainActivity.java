@@ -36,8 +36,10 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
 
     //Database database;
-    ArrayList<Task> tasks;
+    ArrayList<Task> tasks = new ArrayList<>();
     SharedPreferences preferences;
+    RecyclerView recyclerView;
+    Handler handler;
 
     @Override
     public void onResume(){
@@ -60,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         name.setText(String.format("%s's tasks:", namePassedIn));
         String userTeam = preferences.getString("userTeam", "No team selected");
 
+
+        populateRecycler();
+
 //        Team chosenTeam = null;
 //        for(int i = 0; i < teams.size(); i++) {
 //            if (teams.get(i).getName().equals(userTeam)) {
@@ -74,22 +79,32 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //tasks.clear();
+        setupRecyclerView();
+        configAws();
+        setupButtons();
+        createHandler();
+        populateRecycler();
 
 
-        // initialize Amplify API
-        try {
-            Amplify.addPlugin(new AWSApiPlugin());
-            Amplify.configure(getApplicationContext());
-            //createTeams();
 
-        } catch (AmplifyException e) {
-            Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
-        }
-
+//=====================================================
+//        public void configAws() {
+//            // initialize Amplify API
+//            try {
+//                Amplify.addPlugin(new AWSApiPlugin());
+//                Amplify.configure(getApplicationContext());
+//                //createTeams();
+//
+//            } catch (AmplifyException e) {
+//                Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
+//            }
+//        }
+//==================================================
         //ArrayList<Task> taskDb = (ArrayList<Task>) database.taskDao().getDbTasks(); // TODO check name
 
         // setup to be able to save and access data to and from SharedPreferences (local storage)
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
+        preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
         final SharedPreferences.Editor preferencesEditor = preferences.edit();
 
         // check for and display users name
@@ -106,12 +121,113 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 //                .build();
 
         //======== RecyclerView =========================
-        tasks = new ArrayList<>();
-        RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
+        //tasks =new ArrayList<>(); //TODO: is this needed anymore
+
+//        public void setupRecyclerView() {
+//            RecyclerView recyclerView = findViewById(R.id.recyclerTaskList);
+//            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//            recyclerView.setAdapter(new TaskAdapter(tasks, this));
+//        }
+
+//==========================================================================
+//        public void createHandler() {
+//            handler = new Handler(Looper.getMainLooper(),
+//                    new Handler.Callback() {
+//                        @Override
+//                        public boolean handleMessage(@NonNull Message msg) {
+//                            recyclerView.getAdapter().notifyDataSetChanged();
+//                            return false;
+//                        }
+//                    });
+//        }
+//===============================================================
+//        public void populateRecycler() {
+//            Amplify.API.query(
+//                    ModelQuery.list(Task.class),
+//                    response -> {
+//                        for (Task task : response.getData()) {  //populate list for recyclerview.
+//                            if (preferences.contains("userTeam")) { // check that a user team exist before trying to find teams task
+//                                if (task.taskForTeam.getName().equals(preferences.getString("userTeam", " "))) {
+//                                    tasks.add(task);
+//                                }
+//                            } else {
+//                                tasks.add(task);
+//                            }
+//
+//                        }
+//                        handler.sendEmptyMessage(1);
+//                        Log.i("AmplifyQuery", "Number of items from dynamodb" + tasks.size());
+//                    },
+//                    error -> Log.i("AmplifyQuery", "Failed to get items"));
+//        }
+
+//        //================= Buttons =====================
+//        public void setupButtons() {
+//            // got to settings activity
+//            ImageButton settingsActivity = MainActivity.this.findViewById(R.id.goToSettings);
+//            settingsActivity.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent settingsIntent = new Intent(MainActivity.this, Settings.class);
+//                    MainActivity.this.startActivity(settingsIntent);
+//                }
+//            });
+//
+//            // add Task button
+//            Button addTask = MainActivity.this.findViewById(R.id.addTask);
+//            addTask.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent addTaskIntent = new Intent(MainActivity.this, AddATask.class);
+//                    MainActivity.this.startActivity(addTaskIntent);
+//                }
+//            });
+//
+//            // go to all tasks button
+//            Button allTask = MainActivity.this.findViewById(R.id.allTasks);
+//            allTask.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent allTaskIntent = new Intent(MainActivity.this, AllTasks.class);
+//                    MainActivity.this.startActivity(allTaskIntent);
+//                }
+//            });
+//        }
+    }
+
+    @Override
+    public void taskListener(Task task) {
+        Intent intent = new Intent(MainActivity.this, TaskDetail.class);
+
+        intent.putExtra("taskTitle", task.getTitle());
+        intent.putExtra("taskBody", task.getDescription());
+        intent.putExtra("taskState", task.getStatus());
+        this.startActivity(intent);
+    }
+
+    //============= RecyclerView ===========================
+    public void setupRecyclerView() {
+        recyclerView = findViewById(R.id.recyclerTaskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new TaskAdapter(tasks, this));
+    }
 
-        Handler handler = new Handler(Looper.getMainLooper(),
+    //============= Configure AWS =========================
+    public void configAws() {
+        // initialize Amplify API
+        try {
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
+            //createTeams();
+
+        } catch (AmplifyException e) {
+            Log.e("MainActivityAmplify", "Could not initialize Amplify", e);
+        }
+    }
+
+    //================= Handler =====================
+    public void createHandler() {
+        handler = new Handler(Looper.getMainLooper(),
                 new Handler.Callback() {
                     @Override
                     public boolean handleMessage(@NonNull Message msg) {
@@ -119,18 +235,20 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
                         return false;
                     }
                 });
-//===============================================================
+    }
+
+    //================= Populate RecyclerView =======
+    public void populateRecycler() {
         Amplify.API.query(
                 ModelQuery.list(Task.class),
                 response -> {
-                    for(Task task : response.getData()) {  //populate list for recyclerview.
-                        System.out.println(preferences.getString("userTeam", "nope"));
-                        // Paul figured this one out :)
-                        if (preferences.contains("userTeam")){ // check that a user team exist before trying to find teams task
+                    tasks.clear();
+                    for (Task task : response.getData()) {  //populate list for recyclerview.
+                        if (preferences.contains("userTeam")) { // check that a user team exist before trying to find teams task
                             if (task.taskForTeam.getName().equals(preferences.getString("userTeam", " "))) {
                                 tasks.add(task);
                             }
-                    }else {
+                        } else {
                             tasks.add(task);
                         }
 
@@ -139,9 +257,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
                     Log.i("AmplifyQuery", "Number of items from dynamodb" + tasks.size());
                 },
                 error -> Log.i("AmplifyQuery", "Failed to get items"));
+    }
 
-
-        //================= Buttons =====================
+    //================= Buttons =====================
+    public void setupButtons() {
         // got to settings activity
         ImageButton settingsActivity = MainActivity.this.findViewById(R.id.goToSettings);
         settingsActivity.setOnClickListener(new View.OnClickListener() {
@@ -173,16 +292,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         });
     }
 
-    @Override
-    public void taskListener(Task task) {
-        Intent intent = new Intent(MainActivity.this, TaskDetail.class);
-
-        intent.putExtra("taskTitle", task.getTitle());
-        intent.putExtra("taskBody", task.getDescription());
-        intent.putExtra("taskState", task.getStatus());
-        this.startActivity(intent);
-    }
-
+    //============= Create Test teams ======================
     public void createTeams(){
         Team teamRed = Team.builder()
                 .name("Red Team").build();
@@ -205,4 +315,4 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
                 response -> Log.i("Amplify", "Team created"),
                 error -> Log.e("Amplify", "Team created"));
     }
-}
+}// end of mainActivity
