@@ -25,38 +25,24 @@ import java.util.ArrayList;
 
 public class AddATask extends AppCompatActivity {
    // Database database;
+   ArrayList<Team> teams = new ArrayList<>();
+   Toast toast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_a_task);
 
-        ArrayList<Team> teams = new ArrayList<>();
+        // ActionBar back arrow
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //========== Get Teams ========================
-        Amplify.API.query(ModelQuery.list(Team.class),
-                response -> {
-                    for(Team team : response.getData()){
-                        teams.add(team);
-                    } },
-                error -> Log.e("AmplifyAddTask", "failed getting teams"));
+        // Set default button press
+        RadioButton redButton = AddATask.this.findViewById(R.id.redRadio);
+        redButton.toggle();
 
-        //========== Database setup ====================
-//        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
-//                .allowMainThreadQueries()
-//                .build();
-
-        //ArrayList<Task> allTask = (ArrayList<Task>) database.taskDao().getDbTasks();
-
-//        TextView counter = findViewById(R.id.taskCounter);
-//        counter.setText(allTask.size());
-        //=========== Toast setup ======================
-//https://developer.android.com/guide/topics/ui/notifiers/toasts.html
-        Context context = getApplicationContext();
-        CharSequence text = "Submitted!";
-        int duration = Toast.LENGTH_SHORT;
-
-        final Toast toast = Toast.makeText(context, text, duration);
+        queryTeams();
+        createToast();
 
         //========== Add Task Button and Listener ========
         Button submitTask = AddATask.this.findViewById(R.id.submitTask);
@@ -64,44 +50,73 @@ public class AddATask extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //========== Get team matching selected radio button ====================
-                RadioGroup getBox = AddATask.this.findViewById(R.id.buttonBox);
-                RadioButton selectedTeam = AddATask.this.findViewById(getBox.getCheckedRadioButtonId());
-                String teamName = selectedTeam.getText().toString();
-                Team chosenTeam = null;
-                for(int i = 0; i < teams.size(); i++){
-                    if(teams.get(i).getName().equals(teamName)){
-                        chosenTeam = teams.get(i);
-                    }
-                }
-
-                //========== Get new Task ================
-                TextView getTaskTitle = AddATask.this.findViewById(R.id.newTaskTitle);
-                String name = getTaskTitle.getText().toString();
-                TextView getTaskBody = AddATask.this.findViewById(R.id.newTaskBody);
-                String body = getTaskBody.getText().toString();
-
-                Task newThingToDo = Task.builder()
-                        .title(name)
-                        .description(body)
-                        .status("new").taskForTeam(chosenTeam).build();
-
-                //========= Send to online db ===========
-                Amplify.API.mutate(ModelMutation.create(newThingToDo),
-                        response -> Log.i("AddTask", "Added " + name),
-                        error -> Log.e("AddTask", "Unable to add task"));
-
-                //========= Save to database =============
-                //database.taskDao().saveToDb(newThingToDo);
-                //========= Toast and Go =================
-                toast.show();
-                onBackPressed();
+                Team chosenTeam = getTeam();
+                getAndSaveTask(chosenTeam);
+                toastAndGo();
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
-    //back arrow in taskbar
+
+    //=========== Toast and Go =====================
+    public void toastAndGo() {
+        toast.show();
+        onBackPressed();
+    }
+
+    //=========== Get and Save Task ================
+    public void getAndSaveTask(Team chosenTeam){
+        TextView getTaskTitle = AddATask.this.findViewById(R.id.newTaskTitle);
+        String name = getTaskTitle.getText().toString();
+        TextView getTaskBody = AddATask.this.findViewById(R.id.newTaskBody);
+        String body = getTaskBody.getText().toString();
+
+        Task newThingToDo = Task.builder()
+                .title(name)
+                .description(body)
+                .status("new").taskForTeam(chosenTeam).build();
+
+        //========= Send to online db ===========
+        Amplify.API.mutate(ModelMutation.create(newThingToDo),
+                response -> Log.i("AddTask", "Added " + name),
+                error -> Log.e("AddTask", "Unable to add task"));
+    }
+
+    //=========== Get Team =========================
+    public Team getTeam() {
+        RadioGroup getBox = AddATask.this.findViewById(R.id.buttonBox);
+        RadioButton selectedTeam = AddATask.this.findViewById(getBox.getCheckedRadioButtonId());
+        String teamName = selectedTeam.getText().toString();
+        Team chosenTeam = null;
+        for (int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getName().equals(teamName)) {
+                chosenTeam = teams.get(i);
+            }
+        }
+        return  chosenTeam;
+    }
+
+
+    //=========== Toast setup ======================
+    public void createToast() {
+    //https://developer.android.com/guide/topics/ui/notifiers/toasts.html
+        Context context = getApplicationContext();
+        CharSequence text = "Submitted!";
+        int duration = Toast.LENGTH_SHORT;
+
+        toast = Toast.makeText(context, text, duration);
+    }
+
+    //============= Query Teams ==========================
+    public void queryTeams() {
+        Amplify.API.query(ModelQuery.list(Team.class), response -> {
+            for (Team team : response.getData()) {
+                teams.add(team);
+            } }, error -> Log.e("AmplifyAddTask", "failed getting teams"));
+    }
+
+
+    //============= Back arrow in Taskbar ================
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -109,3 +124,25 @@ public class AddATask extends AppCompatActivity {
         return true;
     }
 }
+
+
+
+
+
+
+//================= Zombie Code =====================
+
+//========= Save to database =============
+//database.taskDao().saveToDb(newThingToDo);
+
+//========== Database setup ====================
+//        database = Room.databaseBuilder(getApplicationContext(), Database.class, "dbBucket")
+//                .allowMainThreadQueries()
+//                .build();
+
+//ArrayList<Task> allTask = (ArrayList<Task>) database.taskDao().getDbTasks();
+
+//======== trying to populate counter ===========
+//        TextView counter = findViewById(R.id.taskCounter);
+//        counter.setText(allTask.size());
+

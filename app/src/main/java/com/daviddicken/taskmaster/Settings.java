@@ -26,19 +26,13 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        //set default radio button
+        RadioButton redButton = Settings.this.findViewById(R.id.red);
+        redButton.toggle();
+
         // SharePreferences setup (local storage)
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final SharedPreferences.Editor preferencesEditor = preferences.edit();
-
-        //========== Get Teams ========================
-//        ArrayList<Team> teams = new ArrayList<>();
-//        Amplify.API.query(ModelQuery.list(Team.class),
-//                response -> {
-//                    for(Team team : response.getData()){
-//                        teams.add(team);
-//                    } },
-//                error -> Log.e("AmplifyAddTask", "failed getting teams"));
-
 
         // Save user button action
         Button saveUser = this.findViewById(R.id.saveName);
@@ -49,8 +43,6 @@ public class Settings extends AppCompatActivity {
                 RadioGroup getBox = Settings.this.findViewById(R.id.settingBox);
                 RadioButton selectedButton = Settings.this.findViewById(getBox.getCheckedRadioButtonId());
                 String userTeam = selectedButton.getText().toString();
-
-
                 TextView getName = Settings.this.findViewById(R.id.enteredName);
 
                 preferencesEditor.putString("usersName", getName.getText().toString());
@@ -60,8 +52,16 @@ public class Settings extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
-
-
     }
 }
+
+//================== Zombie Code ==========================
+
+//========== Get Teams ========================
+//        ArrayList<Team> teams = new ArrayList<>();
+//        Amplify.API.query(ModelQuery.list(Team.class),
+//                response -> {
+//                    for(Team team : response.getData()){
+//                        teams.add(team);
+//                    } },
+//                error -> Log.e("AmplifyAddTask", "failed getting teams"));
