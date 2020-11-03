@@ -29,8 +29,11 @@ android {
 }
 
 dependencies {
+
     implementation 'com.amplifyframework:core:1.4.1'
     implementation 'com.amplifyframework:aws-api:1.4.1'
+    // Cognito
+    implementation 'com.amplifyframework:aws-auth-cognito:1.4.1'
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
