@@ -6,10 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -27,11 +24,15 @@ import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.AuthUserAttributeKey;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     SharedPreferences preferences;
     RecyclerView recyclerView;
     Handler handler;
+    Handler signedInHandler;
 
     @Override
     public void onResume(){
@@ -58,11 +60,54 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
         setupRecyclerView();
         configAws();
+        createSignedInHandler(); //TODO: Merge handler creation into one method
+        isLoggedIn();
+        //addUsers("testUser", "Password123", "davidfromSeattle@gmail.com");
+        //verifyUser("testUser", "668837");
+        logIn("testUser", "Password123");
         setupButtons();
         createHandler();
         populateRecycler();
         populateViews();
+
     }
+
+    //============= Log In =================================
+    public void logIn(String userName, String password){
+        Amplify.Auth.signIn(
+                userName,
+                password,
+                result -> {
+                    Log.i("AuthQuickstart", result.isSignInComplete() ? "Sign in succeeded" : "Sign in not complete");
+                    isLoggedIn();
+                },
+                error -> Log.e("AuthQuickstart", error.toString())
+        );
+
+    }
+
+    //============= Verify User ============================
+    public void verifyUser(String userName, String code){
+        Amplify.Auth.confirmSignUp(
+                userName,
+                code,
+                result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
+                error -> Log.e("AuthQuickstart", error.toString())
+        );
+
+    }
+
+    //============= Add test Users =========================
+    public void addUsers(String userName, String password, String email){
+        Amplify.Auth.signUp(
+                userName,
+                password,
+                AuthSignUpOptions.builder().userAttribute(AuthUserAttributeKey.email(), email).build(),
+                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
+                error -> Log.e("AuthQuickStart", "Sign up failed", error)
+        );
+    }
+
 
     //============= Go to Task Detail Page =================
     @Override
@@ -75,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         this.startActivity(intent);
     }
 
-    //============ Populate views (Users name) ====
+    //============ Populate views (Users name) ===============
     public void populateViews() {
         // setup to be able to save and access data to and from SharedPreferences (local storage)
         preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
@@ -100,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         // initialize Amplify API
         try {
             Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.configure(getApplicationContext());
             //createTeams();
 
@@ -108,7 +154,40 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         }
     }
 
-    //================= Handler =====================
+    //============ Check if Signed In ================
+    public void isLoggedIn(){
+        AtomicBoolean isSignedIn = new AtomicBoolean(false);
+        Amplify.Auth.fetchAuthSession(
+                result -> {
+                    Log.i("AmplifyQuickstart", result.toString());
+                    Message message = new Message();
+                    if(result.isSignedIn()){
+                        message.arg1 = 1;
+                        signedInHandler.sendMessage(message);
+                    }else{
+                        message.arg1 = 0;
+                        signedInHandler.sendMessage(message);
+                    }
+                },
+                error -> Log.e("AmplifyQuickstart", error.toString())
+        );
+    }
+
+    //============ Handler - signed In ===============
+    public void createSignedInHandler() {
+        signedInHandler = new Handler(Looper.getMainLooper(), message -> {
+            if(message.arg1 == 0){
+               Log.i("Amplify.login", "Not signed in");
+            }else if(message.arg1 == 1){
+                Log.i("Amplify.login", "Signed in: True");
+            }else{
+                Log.i("Amplify.login", "missed the if?");
+            }
+            return false;
+        });
+    }
+
+    //============ Handler ===========================
     public void createHandler() {
         handler = new Handler(Looper.getMainLooper(),
                 new Handler.Callback() {
