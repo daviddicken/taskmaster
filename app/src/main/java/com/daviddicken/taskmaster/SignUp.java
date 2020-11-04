@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,10 +56,18 @@ public class SignUp extends AppCompatActivity {
                 result -> {
                     Log.i("Signup", "Result: " + result.toString());
                     toast.show();
+                    confirm();
                 },
                 error -> Log.e("Signup", "Sign up failed", error)
         );
         onBackPressed();
+    }
+
+    //=========== Send to confirmation =============
+    public void confirm(){
+        startActivity(new Intent(SignUp.this, verify.class));
+
+
     }
 
     //=========== Toast setup ======================
