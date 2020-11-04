@@ -223,7 +223,16 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
     //================= Buttons =====================
     public void setupButtons() {
-        // got to settings activity
+
+        // log in---------------------------
+        Button login = findViewById(R.id.logIn);
+        login.setOnClickListener(view -> this.startActivity(new Intent(this, LogIn.class)));
+
+        // Sign up-------------------------------
+        Button signup = findViewById(R.id.signUp);
+        signup.setOnClickListener(view -> this.startActivity(new Intent(this, SignUp.class)));
+
+        // got to settings activity----------------------------------------------------
         ImageButton settingsActivity = MainActivity.this.findViewById(R.id.goToSettings);
         settingsActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
             }
         });
 
-        // add Task button
+        // add Task button-------------------------------------------
         Button addTask = MainActivity.this.findViewById(R.id.addTask);
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
             }
         });
 
-        // go to all tasks button
+        // go to all tasks button-------------------------------------
         Button allTask = MainActivity.this.findViewById(R.id.allTasks);
         allTask.setOnClickListener(new View.OnClickListener() {
             @Override
