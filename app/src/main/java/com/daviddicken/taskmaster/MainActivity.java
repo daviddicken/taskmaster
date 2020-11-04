@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         setupRecyclerView();
         configAws();
         createSignedInHandler(); //TODO: Merge handler creation into one method
-        isLoggedIn();
+       // isLoggedIn();
         //addUsers("testUser", "Password123", "davidfromSeattle@gmail.com");
         //verifyUser("testUser", "668837");
-        logIn("testUser", "Password123");
+        //logIn("testUser", "Password123");
         setupButtons();
         createHandler();
         populateRecycler();
@@ -85,29 +85,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         );
 
     }
-
-    //============= Verify User ============================
-    public void verifyUser(String userName, String code){
-        Amplify.Auth.confirmSignUp(
-                userName,
-                code,
-                result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
-                error -> Log.e("AuthQuickstart", error.toString())
-        );
-
-    }
-
-    //============= Add test Users =========================
-    public void addUsers(String userName, String password, String email){
-        Amplify.Auth.signUp(
-                userName,
-                password,
-                AuthSignUpOptions.builder().userAttribute(AuthUserAttributeKey.email(), email).build(),
-                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
-                error -> Log.e("AuthQuickStart", "Sign up failed", error)
-        );
-    }
-
 
     //============= Go to Task Detail Page =================
     @Override
@@ -300,3 +277,27 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 //                //.fallbackToDestructiveMigration()
 //                .allowMainThreadQueries()
 //                .build();
+
+
+
+//    //============= Verify User ============================
+//    public void verifyUser(String userName, String code){
+//        Amplify.Auth.confirmSignUp(
+//                userName,
+//                code,
+//                result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
+//                error -> Log.e("AuthQuickstart", error.toString())
+//        );
+//
+//    }
+
+//============= Add test Users =========================
+//    public void addUsers(String userName, String password, String email){
+//        Amplify.Auth.signUp(
+//                userName,
+//                password,
+//                AuthSignUpOptions.builder().userAttribute(AuthUserAttributeKey.email(), email).build(),
+//                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
+//                error -> Log.e("AuthQuickStart", "Sign up failed", error)
+//        );
+//    }

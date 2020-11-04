@@ -42,6 +42,7 @@ public class SignUp extends AppCompatActivity {
             String email = ((TextView) findViewById(R.id.emailInput)).getText().toString();
 
             preferencesEditor.putString("usersName", userName);
+            preferencesEditor.putString("password", password);
             preferencesEditor.apply();
             signup(userName, password, email);
         });
@@ -60,7 +61,7 @@ public class SignUp extends AppCompatActivity {
                 },
                 error -> Log.e("Signup", "Sign up failed", error)
         );
-        onBackPressed();
+        //onBackPressed();
     }
 
     //=========== Send to confirmation =============

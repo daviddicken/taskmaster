@@ -17,8 +17,11 @@ import com.amplifyframework.core.Amplify;
 
 public class verify extends AppCompatActivity {
     SharedPreferences preferences;
+    SharedPreferences.Editor preferencesEditor;
     String namePassedIn;
     String verifyCode;
+    String password;
+    Boolean flag = false;
     Toast toast;
 
     @Override
@@ -28,39 +31,35 @@ public class verify extends AppCompatActivity {
 
         populateViews();
         getData();
-        verifyUser(namePassedIn, verifyCode);
     }
 
-    //=========== Toast and Go =====================
-    public void toastAndGo() {
-        toast.show();
-        onBackPressed();
+    //============= Log In =================================
+    public void logIn(String userName, String password){
+        Amplify.Auth.signIn(
+                userName,
+                password,
+                result -> {
+                    System.out.println("result " + result);
+                    Log.i("AuthQuickstart", result.isSignInComplete() ? "Sign in succeeded" : "Sign in not complete");
+                    System.out.println("Logged in!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      //              flag = true;
+//                    onBackPressed();
+                    //finish();
+//                    preferencesEditor.putString("password", "");
+//                    preferencesEditor.apply();
+                   // Intent intent
+                    this.startActivity(new Intent(verify.this, MainActivity.class));
+                },
+                error -> Log.e("AuthQuickstart", error.toString())
+        );
+
     }
-
-    //=========== Toast setup ======================
-    public void createToast() {
-        //https://developer.android.com/guide/topics/ui/notifiers/toasts.html
-        Context context = getApplicationContext();
-        CharSequence text = "Verified";
-        int duration = Toast.LENGTH_SHORT;
-
-        toast = Toast.makeText(context, text, duration);
-    }
-
-    //============= Failed Toast ===========================
-//    public void failedToast() {
-//        //https://developer.android.com/guide/topics/ui/notifiers/toasts.html
-//        Context context = getApplicationContext();
-//        CharSequence text = "Failed";
-//        int duration = Toast.LENGTH_LONG;
-//
-//        toast = Toast.makeText(context, text, duration);
-//    }
 
     //============= Get Data ===============================
     public void getData(){
         ((Button) findViewById(R.id.confirmButton)).setOnClickListener(view ->{
             verifyCode = ((TextView) findViewById(R.id.verificationCode)).getText().toString();
+            verifyUser(namePassedIn, verifyCode);
         });
     }
 
@@ -71,8 +70,12 @@ public class verify extends AppCompatActivity {
                 code,
                 result -> {
                     Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete");
-                    createToast();
-                    toastAndGo();
+                    System.out.println("before log in111111111111111111111111111111111111111111111111111111111111");
+                    logIn(userName, password);
+                    System.out.println("made it this far!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+//                    createToast();
+//                    toastAndGo();
                 },
                 error -> {
                     Log.e("AuthQuickstart", error.toString());
@@ -89,9 +92,11 @@ public class verify extends AppCompatActivity {
     public void populateViews() {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
-
+        SharedPreferences.Editor preferencesEditor = preferences.edit();
         TextView name = findViewById(R.id.titleName);
         namePassedIn = preferences.getString("usersName", "");
+        password = preferences.getString("password", "");
+
 
         name.setText(String.format("%s\nPlease check your email for verification code.", namePassedIn));
 
@@ -117,3 +122,6 @@ public class verify extends AppCompatActivity {
 //
 //        toast = Toast.makeText(context, text, duration);
 //    }
+
+
+
