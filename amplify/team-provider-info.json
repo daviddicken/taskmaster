@@ -1,20 +1,27 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-amplifystarter-dev-171454-authRole",
-      "UnauthRoleArn": "arn:aws:iam::552285098372:role/amplify-amplifystarter-dev-171454-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::552285098372:role/amplify-amplifystarter-dev-171454-authRole",
-      "Region": "us-west-2",
-      "DeploymentBucketName": "amplify-amplifystarter-dev-171454-deployment",
-      "UnauthRoleName": "amplify-amplifystarter-dev-171454-unauthRole",
-      "StackName": "amplify-amplifystarter-dev-171454",
-      "StackId": "arn:aws:cloudformation:us-west-2:552285098372:stack/amplify-amplifystarter-dev-171454/9c93cf70-18b2-11eb-828c-0ad4a668e32c",
-      "AmplifyAppId": "d2tvdquxa26zj6"
-    },
-    "categories": {
-      "auth": {
-        "amplifystarter2ebcfb12": {}
-      }
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-amplifystarter-dev-171454-authRole",
+            "UnauthRoleArn": "arn:aws:iam::552285098372:role/amplify-amplifystarter-dev-171454-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::552285098372:role/amplify-amplifystarter-dev-171454-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-amplifystarter-dev-171454-deployment",
+            "UnauthRoleName": "amplify-amplifystarter-dev-171454-unauthRole",
+            "StackName": "amplify-amplifystarter-dev-171454",
+            "StackId": "arn:aws:cloudformation:us-west-2:552285098372:stack/amplify-amplifystarter-dev-171454/9c93cf70-18b2-11eb-828c-0ad4a668e32c",
+            "AmplifyAppId": "d2tvdquxa26zj6"
+        },
+        "categories": {
+            "auth": {
+                "amplifystarter2ebcfb12": {}
+            },
+            "notifications": {
+                "Pinpoint": {
+                    "Name": "amplifyStarter5ytHN-dev",
+                    "Id": "11a22c6cb95b4fd19cd4ee5c6a08d0fa",
+                    "Region": "us-west-2"
+                }
+            }
+        }
     }
-  }
 }
