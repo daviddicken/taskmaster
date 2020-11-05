@@ -7,6 +7,7 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -20,6 +21,12 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserStateDetails;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
+import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
@@ -30,6 +37,10 @@ import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,12 +54,21 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     Handler handler;
     Handler signedInHandler;
 
+    //================ Pin Point =============================
+    public static final String TAG = "Amplify";
+    private static PinpointManager pinpointManager;
+
+
+
     @Override
     public void onResume(){
         super.onResume();
 
         populateViews();
         populateRecycler();
+
+
+
     }
 
 //=================== ON CREATE ==================================
@@ -60,17 +80,55 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
         setupRecyclerView();
         configAws();
+        getPinpointManager(getApplicationContext());
         createSignedInHandler(); //TODO: Merge handler creation into one method
-        isLoggedIn();
+       // isLoggedIn();
         //addUsers("testUser", "Password123", "davidfromSeattle@gmail.com");
         //verifyUser("testUser", "668837");
-        logIn("testUser", "Password123");
+        //logIn("testUser", "Password123");
         setupButtons();
         createHandler();
         populateRecycler();
         populateViews();
 
     }
+
+    //=============== PinPoint Manager =======================
+    public static PinpointManager getPinpointManager(final Context applicationContext) {
+        if (pinpointManager == null) {
+            final AWSConfiguration awsConfig = new AWSConfiguration(applicationContext);
+            AWSMobileClient.getInstance().initialize(applicationContext, awsConfig, new Callback<UserStateDetails>() {
+                @Override
+                public void onResult(UserStateDetails userStateDetails) {
+                    Log.i("INIT", userStateDetails.getUserState().toString());
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("INIT", "Initialization error.", e);
+                }
+            });
+
+            PinpointConfiguration pinpointConfig = new PinpointConfiguration(
+                    applicationContext,
+                    AWSMobileClient.getInstance(),
+                    awsConfig);
+
+            pinpointManager = new PinpointManager(pinpointConfig);
+
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull com.google.android.gms.tasks.Task<InstanceIdResult> task) {
+                            final String token = task.getResult().getToken();
+                            Log.d(TAG, "Registering push notifications token: " + token);
+                            pinpointManager.getNotificationClient().registerDeviceToken(token);
+                        }
+                    });
+        }
+        return pinpointManager;
+    }
+
 
     //============= Log In =================================
     public void logIn(String userName, String password){
@@ -85,29 +143,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         );
 
     }
-
-    //============= Verify User ============================
-    public void verifyUser(String userName, String code){
-        Amplify.Auth.confirmSignUp(
-                userName,
-                code,
-                result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
-                error -> Log.e("AuthQuickstart", error.toString())
-        );
-
-    }
-
-    //============= Add test Users =========================
-    public void addUsers(String userName, String password, String email){
-        Amplify.Auth.signUp(
-                userName,
-                password,
-                AuthSignUpOptions.builder().userAttribute(AuthUserAttributeKey.email(), email).build(),
-                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
-                error -> Log.e("AuthQuickStart", "Sign up failed", error)
-        );
-    }
-
 
     //============= Go to Task Detail Page =================
     @Override
@@ -223,7 +258,16 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
     //================= Buttons =====================
     public void setupButtons() {
-        // got to settings activity
+
+        // log in---------------------------
+        Button login = findViewById(R.id.logIn);
+        login.setOnClickListener(view -> this.startActivity(new Intent(this, LogIn.class)));
+
+        // Sign up-------------------------------
+        Button signup = findViewById(R.id.signUp);
+        signup.setOnClickListener(view -> this.startActivity(new Intent(this, SignUp.class)));
+
+        // got to settings activity----------------------------------------------------
         ImageButton settingsActivity = MainActivity.this.findViewById(R.id.goToSettings);
         settingsActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
             }
         });
 
-        // add Task button
+        // add Task button-------------------------------------------
         Button addTask = MainActivity.this.findViewById(R.id.addTask);
         addTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
             }
         });
 
-        // go to all tasks button
+        // go to all tasks button-------------------------------------
         Button allTask = MainActivity.this.findViewById(R.id.allTasks);
         allTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,3 +335,27 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 //                //.fallbackToDestructiveMigration()
 //                .allowMainThreadQueries()
 //                .build();
+
+
+
+//    //============= Verify User ============================
+//    public void verifyUser(String userName, String code){
+//        Amplify.Auth.confirmSignUp(
+//                userName,
+//                code,
+//                result -> Log.i("AuthQuickstart", result.isSignUpComplete() ? "Confirm signUp succeeded" : "Confirm sign up not complete"),
+//                error -> Log.e("AuthQuickstart", error.toString())
+//        );
+//
+//    }
+
+//============= Add test Users =========================
+//    public void addUsers(String userName, String password, String email){
+//        Amplify.Auth.signUp(
+//                userName,
+//                password,
+//                AuthSignUpOptions.builder().userAttribute(AuthUserAttributeKey.email(), email).build(),
+//                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
+//                error -> Log.e("AuthQuickStart", "Sign up failed", error)
+//        );
+//    }

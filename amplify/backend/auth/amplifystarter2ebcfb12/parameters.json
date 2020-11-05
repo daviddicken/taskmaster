@@ -1,6 +1,6 @@
 {
     "identityPoolName": "amplifystarter2ebcfb12_identitypool_2ebcfb12",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "amplif2ebcfb12",
     "userPoolName": "amplifystarter2ebcfb12_userpool_2ebcfb12",
     "autoVerifiedAttributes": [

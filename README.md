@@ -69,7 +69,18 @@ Day 7
 Added three teams and the ability to assign new tasks to a team. And the ability for a user to select
 a team when the enter their name. Only the task for that users team will be displayed on the main page.
 
-![Screenshot day 7](screenshots/day7Screenshot.PNG
+![Screenshot day 7](screenshots/day7Screenshot.PNG)
+
+---------------------
+## 11/4/2020
+## change log [2.1.0]
+Day 8
+Set up the ability to send phone push notifications through AWS PinPoint or FireBase.
+
+![FireBase Console](screenshots/fireBaseScreenshot.PNG)
+![FireBase Phone Message](screenshots/recievedFirebaseMessage.PNG)
+![PinPoint Console](screenshots/pinpointScreenshot.PNG)
+![PinPoint Phone Message](screenshots/pinpointRecieved.PNG)
 
 
 
