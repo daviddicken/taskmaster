@@ -28,6 +28,8 @@ import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointConfiguration;
 import com.amazonaws.mobileconnectors.pinpoint.PinpointManager;
 import com.amplifyframework.AmplifyException;
+import com.amplifyframework.analytics.AnalyticsEvent;
+import com.amplifyframework.analytics.pinpoint.AWSPinpointAnalyticsPlugin;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
@@ -43,6 +45,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInteractWithTaskListener {
@@ -58,20 +61,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     public static final String TAG = "Amplify";
     private static PinpointManager pinpointManager;
 
-
-
-    @Override
-    public void onResume(){
-        super.onResume();
-
-        populateViews();
-        populateRecycler();
-
-
-
-    }
-
-//=================== ON CREATE ==================================
+    //=================== ON CREATE ==================================
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,15 +72,62 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         configAws();
         getPinpointManager(getApplicationContext());
         createSignedInHandler(); //TODO: Merge handler creation into one method
-       // isLoggedIn();
-        //addUsers("testUser", "Password123", "davidfromSeattle@gmail.com");
-        //verifyUser("testUser", "668837");
-        //logIn("testUser", "Password123");
         setupButtons();
         createHandler();
         populateRecycler();
         populateViews();
+        analyticsEvent("OpenedApp", "User has opened the app");
 
+        AnalyticsEvent event = AnalyticsEvent.builder()
+                .name("Opened app test")
+                .addProperty("time", Long.toString(new Date().getTime()))
+                .addProperty("openApp", "This one went through")
+                .build();
+        Amplify.Analytics.recordEvent(event);
+
+    }
+
+    //============== On Resume ===================
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        populateViews();
+        populateRecycler();
+
+    }
+
+//    //=============== on Stop ==================================
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    protected void onStop() {
+//        super.onStop();
+//        analyticsEvent("StoppedApp", "User has stopped the app");
+//
+//    }
+//
+//    //=============== on Pause ==================================
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    protected void onPause() {
+//        super.onPause();
+//        analyticsEvent("PausedApp", "User has paused the app");
+//
+//    }
+//
+//    //=============== on destrtoy ================================
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        analyticsEvent("ExitApp", "User has exited the app");
+//    }
+
+    //=============== event creater ==========================
+    public void analyticsEvent(String nameOfEvent, String message) {
+        AnalyticsEvent event = AnalyticsEvent.builder()
+                .name(nameOfEvent)
+                .addProperty("time", Long.toString(new Date().getTime()))
+                .addProperty(nameOfEvent, message)
+                .build();
+        Amplify.Analytics.recordEvent(event);
     }
 
     //=============== PinPoint Manager =======================
@@ -181,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSPinpointAnalyticsPlugin(getApplication()));
             Amplify.configure(getApplicationContext());
             //createTeams();
 
@@ -292,6 +330,8 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         allTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analyticsEvent("GoToAllTasks", "User is checking out all tasks");
+                Log.i("Amplify.", "reached this");
                 Intent allTaskIntent = new Intent(MainActivity.this, AllTasks.class);
                 MainActivity.this.startActivity(allTaskIntent);
             }

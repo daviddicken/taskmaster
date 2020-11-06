@@ -42,6 +42,8 @@ dependencies {
     //google analytics
     implementation 'com.google.firebase:firebase-analytics'
 
+    implementation 'com.amplifyframework:aws-analytics-pinpoint:1.4.1'
+
 
 
 
