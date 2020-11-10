@@ -48,10 +48,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="20dp"
         android:text="@string/add_task"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/addImg"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newTaskBody" />
+        app:layout_constraintTop_toBottomOf="@+id/addImg"
+        app:layout_constraintVertical_bias="0.007" />
 
     <TextView
         android:id="@+id/totalTask"
@@ -102,8 +106,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.392"
         app:layout_constraintStart_toEndOf="@+id/submitTask"
-        app:layout_constraintTop_toTopOf="@+id/submitTask"
-        app:layout_constraintVertical_bias="0.441">
+        app:layout_constraintTop_toTopOf="@+id/addImg">
 
         <RadioButton
             android:id="@+id/redRadio"
@@ -133,5 +136,25 @@
             android:textStyle="bold" />
 
     </RadioGroup>
+
+    <Button
+        android:id="@+id/addImg"
+        android:layout_width="90dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="36dp"
+        android:text="Add Pic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.089"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newTaskBody" />
+
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="83dp"
+        android:layout_height="101dp"
+        app:layout_constraintBottom_toBottomOf="@+id/newTaskBody"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/newTaskBody"
+        app:srcCompat="@android:drawable/ic_menu_myplaces" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
