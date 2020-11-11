@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
@@ -62,6 +63,7 @@ public class AddATask extends AppCompatActivity {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +81,19 @@ public class AddATask extends AppCompatActivity {
         getPermission();
         configLocation();
         getLastLocation();
+
+        //========== Stuff for receiving image =========
+        //Thank you Jack and Kamit
+        Intent intent = getIntent();
+        if(intent.getType() != null) {
+            ImageView img = findViewById(R.id.img);
+            //intent.getData();
+            img.setImageURI(intent.getClipData().getItemAt(0).getUri());
+            putInBucket(intent.getClipData().getItemAt(0).getUri());
+        }
+        //intent.getClipData().getItemAt(0).getUri()
+
+
 
         //========== Add pic Button and Listener =========
         Button addPic = AddATask.this.findViewById(R.id.addImg);
@@ -172,6 +187,7 @@ public class AddATask extends AppCompatActivity {
         startActivityForResult(getPicIntent, 1);
     }
 
+    //=============== On Activity for S3 ========================
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -179,16 +195,31 @@ public class AddATask extends AppCompatActivity {
 
         if(reqCode == 1){
             Log.i("Amplify.picImg", "Got an image back");
-            File file = new File(getFilesDir(), "testFile");
-            try {
-                InputStream inStream = getContentResolver().openInputStream(data.getData());
-                FileUtils.copy(inStream, new FileOutputStream(file));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            bucketKey = file.getName() + Math.random();
-            uploadFile(bucketKey, file);
+            putInBucket(data.getData());
+//            File file = new File(getFilesDir(), "testFile");
+//            try {
+//                InputStream inStream = getContentResolver().openInputStream(data.getData());
+//                FileUtils.copy(inStream, new FileOutputStream(file));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            bucketKey = file.getName() + Math.random();
+//            uploadFile(bucketKey, file);
         }
+    }
+
+    //================ save to s3 ================================
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void putInBucket(Uri uri){
+        File file = new File(getFilesDir(), "testFile");
+        try {
+            InputStream inStream = getContentResolver().openInputStream(uri);
+            FileUtils.copy(inStream, new FileOutputStream(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bucketKey = file.getName() + Math.random();
+        uploadFile(bucketKey, file);
     }
 
     //================ download file S3 ===========================

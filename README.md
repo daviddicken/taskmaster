@@ -82,6 +82,21 @@ Set up the ability to send phone push notifications through AWS PinPoint or Fire
 ![PinPoint Console](screenshots/pinpointScreenshot.PNG)
 ![PinPoint Phone Message](screenshots/pinpointRecieved.PNG)
 
+--------------------
+## 11/10/2020
+## change log [3.0.0]
+Day 9ish
+Added the ability for other apps to share images with app. Image is loaded to the add task page and can be
+added to a task object. Also added location tracking when a new task is created the location is saved to
+the task object. When a task is viewed on the task details page both image and location are display as well.
+
+![shareFromOtherApps](screenshots/11-10screenshot.PNG)
+![picLoadedToAddTaskPage](screenshots/11-10screenshot2.PNG)
+![taskDetailWithLocationAndPic](screenshots/11-10screenshot3.PNG)
+
+
+
+
 
 
 
