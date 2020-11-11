@@ -38,5 +38,11 @@
       "service": "Pinpoint",
       "providerPlugin": "awscloudformation"
     }
+  },
+  "storage": {
+    "taskpics": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

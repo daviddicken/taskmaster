@@ -39,11 +39,17 @@ import com.amplifyframework.auth.options.AuthSignUpOptions;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.google.android.gms.tasks.OnCompleteListener;
 //import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     //Database database;
     ArrayList<Task> tasks = new ArrayList<>();
     SharedPreferences preferences;
+    SharedPreferences.Editor preferencesEditor;
     RecyclerView recyclerView;
     Handler handler;
     Handler signedInHandler;
@@ -78,13 +85,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         populateViews();
         analyticsEvent("OpenedApp", "User has opened the app");
 
-        AnalyticsEvent event = AnalyticsEvent.builder()
-                .name("Opened app test")
-                .addProperty("time", Long.toString(new Date().getTime()))
-                .addProperty("openApp", "This one went through")
-                .build();
-        Amplify.Analytics.recordEvent(event);
-
     }
 
     //============== On Resume ===================
@@ -97,28 +97,6 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
     }
 
-//    //=============== on Stop ==================================
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    protected void onStop() {
-//        super.onStop();
-//        analyticsEvent("StoppedApp", "User has stopped the app");
-//
-//    }
-//
-//    //=============== on Pause ==================================
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    protected void onPause() {
-//        super.onPause();
-//        analyticsEvent("PausedApp", "User has paused the app");
-//
-//    }
-//
-//    //=============== on destrtoy ================================
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        analyticsEvent("ExitApp", "User has exited the app");
-//    }
 
     //=============== event creater ==========================
     public void analyticsEvent(String nameOfEvent, String message) {
@@ -196,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     public void populateViews() {
         // setup to be able to save and access data to and from SharedPreferences (local storage)
         preferences = PreferenceManager.getDefaultSharedPreferences(this); // getter
-        final SharedPreferences.Editor preferencesEditor = preferences.edit();
+        preferencesEditor = preferences.edit();
 
         // check for and display users name
         TextView name = findViewById(R.id.theName);
@@ -218,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         try {
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSS3StoragePlugin());
             Amplify.addPlugin(new AWSPinpointAnalyticsPlugin(getApplication()));
             Amplify.configure(getApplicationContext());
             //createTeams();
@@ -398,4 +377,36 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 //                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
 //                error -> Log.e("AuthQuickStart", "Sign up failed", error)
 //        );
+//    }
+
+
+//        AnalyticsEvent event = AnalyticsEvent.builder()
+//                .name("Opened app test")
+//                .addProperty("time", Long.toString(new Date().getTime()))
+//                .addProperty("openApp", "This one went through")
+//                .build();
+//        Amplify.Analytics.recordEvent(event);
+
+
+   //=============== on Stop ==================================
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    protected void onStop() {
+//        super.onStop();
+//        analyticsEvent("StoppedApp", "User has stopped the app");
+//
+//    }
+//
+//    //=============== on Pause ==================================
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    protected void onPause() {
+//        super.onPause();
+//        analyticsEvent("PausedApp", "User has paused the app");
+//
+//    }
+//
+//    //=============== on destrtoy ================================
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        analyticsEvent("ExitApp", "User has exited the app");
 //    }

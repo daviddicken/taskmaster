@@ -1,14 +1,19 @@
 package com.daviddicken.taskmaster;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,6 +25,14 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 
@@ -27,6 +40,8 @@ public class AddATask extends AppCompatActivity {
    // Database database;
    ArrayList<Team> teams = new ArrayList<>();
    Toast toast;
+   String lastFileUploadedKey;
+
 
 
     @Override
@@ -44,6 +59,10 @@ public class AddATask extends AppCompatActivity {
         queryTeams();
         createToast();
 
+        //========== Add pic Button and Listener =========
+        Button addPic = AddATask.this.findViewById(R.id.addImg);
+        addPic.setOnClickListener(v -> retrieveFile());
+
         //========== Add Task Button and Listener ========
         Button submitTask = AddATask.this.findViewById(R.id.submitTask);
         submitTask.setOnClickListener(new View.OnClickListener(){
@@ -56,6 +75,65 @@ public class AddATask extends AppCompatActivity {
             }
         });
 
+    }
+
+    //================ retrieve file s3 ==========================
+    public void retrieveFile(){
+        Intent getPicIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getPicIntent.setType("*/*");
+        //getPicIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{".jpg", ".png"});
+        //next two lines make sure the images are accessible and openable locally
+        //getPicIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        //getPicIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        startActivityForResult(getPicIntent, 1);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    protected void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        if(reqCode == 1){
+            Log.i("Amplify.picImg", "Got an image back");
+            File file = new File(getFilesDir(), "testFile");
+            try {
+                InputStream inStream = getContentResolver().openInputStream(data.getData());
+                FileUtils.copy(inStream, new FileOutputStream(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            uploadFile(file.getName() + Math.random(), file);
+        }
+    }
+
+    //================ download file S3 ===========================
+    public void downloadFile(String key){
+
+        Amplify.Storage.downloadFile(
+                key,
+                new File(getApplicationContext().getFilesDir() + "/" + key + ".txt"),
+                result -> {
+                    Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName());
+                    ImageView img = findViewById(R.id.img);
+                    img.setImageBitmap(BitmapFactory.decodeFile(result.getFile().getPath()));
+                },
+                error -> Log.e("MyAmplifyApp",  "Download Failure", error)
+        );
+
+    }
+
+    //================ upload file S3 =============================
+    public void uploadFile(String key, File file) {
+        lastFileUploadedKey = key;
+        Amplify.Storage.uploadFile(
+                key,
+                file,
+                result -> {
+                    Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey());
+                    downloadFile(key);
+                },
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
     }
 
     //=========== Toast and Go =====================

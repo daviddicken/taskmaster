@@ -44,7 +44,8 @@ dependencies {
 
     implementation 'com.amplifyframework:aws-analytics-pinpoint:1.4.1'
 
-
+    //s3
+    implementation 'com.amplifyframework:aws-storage-s3:1.4.1'
 
 
     implementation 'com.amplifyframework:core:1.4.1'
