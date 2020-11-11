@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
 import androidx.core.util.ObjectsCompat;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import com.amplifyframework.core.model.Model;
 import com.amplifyframework.core.model.annotations.Index;
@@ -21,22 +18,26 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
 /** This is an auto generated class representing the Task type in your schema. */
 @SuppressWarnings("all")
-@Entity
 @ModelConfig(pluralName = "Tasks")
 public final class Task implements Model {
   public static final QueryField ID = field("id");
   public static final QueryField TITLE = field("title");
   public static final QueryField DESCRIPTION = field("description");
   public static final QueryField STATUS = field("status");
+  public static final QueryField ADDRESS = field("address");
+  public static final QueryField LATTITUDE = field("lattitude");
+  public static final QueryField LONGITUDE = field("longitude");
+  public static final QueryField BUCKETKEY = field("bucketkey");
   public static final QueryField TASK_FOR_TEAM = field("taskTaskForTeamId");
-
-  @NonNull
-  @PrimaryKey
-  public final @ModelField(targetType="ID", isRequired = true) String id;
-  public final @ModelField(targetType="String", isRequired = true) String title;
-  public final @ModelField(targetType="String") String description;
-  public final @ModelField(targetType="String") String status;
-  public final @ModelField(targetType="Team") @BelongsTo(targetName = "taskTaskForTeamId", type = Team.class) Team taskForTeam;
+  public @ModelField(targetType="ID", isRequired = true) String id;
+  public @ModelField(targetType="String", isRequired = true) String title;
+  public @ModelField(targetType="String") String description;
+  public @ModelField(targetType="String") String status;
+  public @ModelField(targetType="String") String address;
+  public @ModelField(targetType="Float") Float lattitude;
+  public @ModelField(targetType="Float") Float longitude;
+  public @ModelField(targetType="String") String bucketkey;
+  public @ModelField(targetType="Team") @BelongsTo(targetName = "taskTaskForTeamId", type = Team.class) Team taskForTeam;
   public String getId() {
       return id;
   }
@@ -53,15 +54,35 @@ public final class Task implements Model {
       return status;
   }
   
+  public String getAddress() {
+      return address;
+  }
+  
+  public Float getLattitude() {
+      return lattitude;
+  }
+  
+  public Float getLongitude() {
+      return longitude;
+  }
+  
+  public String getBucketkey() {
+      return bucketkey;
+  }
+  
   public Team getTaskForTeam() {
       return taskForTeam;
   }
   
- public Task(String id, String title, String description, String status, Team taskForTeam) {
+  private Task(String id, String title, String description, String status, String address, Float lattitude, Float longitude, String bucketkey, Team taskForTeam) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.status = status;
+    this.address = address;
+    this.lattitude = lattitude;
+    this.longitude = longitude;
+    this.bucketkey = bucketkey;
     this.taskForTeam = taskForTeam;
   }
   
@@ -77,6 +98,10 @@ public final class Task implements Model {
               ObjectsCompat.equals(getTitle(), task.getTitle()) &&
               ObjectsCompat.equals(getDescription(), task.getDescription()) &&
               ObjectsCompat.equals(getStatus(), task.getStatus()) &&
+              ObjectsCompat.equals(getAddress(), task.getAddress()) &&
+              ObjectsCompat.equals(getLattitude(), task.getLattitude()) &&
+              ObjectsCompat.equals(getLongitude(), task.getLongitude()) &&
+              ObjectsCompat.equals(getBucketkey(), task.getBucketkey()) &&
               ObjectsCompat.equals(getTaskForTeam(), task.getTaskForTeam());
       }
   }
@@ -88,6 +113,10 @@ public final class Task implements Model {
       .append(getTitle())
       .append(getDescription())
       .append(getStatus())
+      .append(getAddress())
+      .append(getLattitude())
+      .append(getLongitude())
+      .append(getBucketkey())
       .append(getTaskForTeam())
       .toString()
       .hashCode();
@@ -101,6 +130,10 @@ public final class Task implements Model {
       .append("title=" + String.valueOf(getTitle()) + ", ")
       .append("description=" + String.valueOf(getDescription()) + ", ")
       .append("status=" + String.valueOf(getStatus()) + ", ")
+      .append("address=" + String.valueOf(getAddress()) + ", ")
+      .append("lattitude=" + String.valueOf(getLattitude()) + ", ")
+      .append("longitude=" + String.valueOf(getLongitude()) + ", ")
+      .append("bucketkey=" + String.valueOf(getBucketkey()) + ", ")
       .append("taskForTeam=" + String.valueOf(getTaskForTeam()))
       .append("}")
       .toString();
@@ -134,6 +167,10 @@ public final class Task implements Model {
       null,
       null,
       null,
+      null,
+      null,
+      null,
+      null,
       null
     );
   }
@@ -143,6 +180,10 @@ public final class Task implements Model {
       title,
       description,
       status,
+      address,
+      lattitude,
+      longitude,
+      bucketkey,
       taskForTeam);
   }
   public interface TitleStep {
@@ -155,6 +196,10 @@ public final class Task implements Model {
     BuildStep id(String id) throws IllegalArgumentException;
     BuildStep description(String description);
     BuildStep status(String status);
+    BuildStep address(String address);
+    BuildStep lattitude(Float lattitude);
+    BuildStep longitude(Float longitude);
+    BuildStep bucketkey(String bucketkey);
     BuildStep taskForTeam(Team taskForTeam);
   }
   
@@ -164,6 +209,10 @@ public final class Task implements Model {
     private String title;
     private String description;
     private String status;
+    private String address;
+    private Float lattitude;
+    private Float longitude;
+    private String bucketkey;
     private Team taskForTeam;
     @Override
      public Task build() {
@@ -174,6 +223,10 @@ public final class Task implements Model {
           title,
           description,
           status,
+          address,
+          lattitude,
+          longitude,
+          bucketkey,
           taskForTeam);
     }
     
@@ -193,6 +246,30 @@ public final class Task implements Model {
     @Override
      public BuildStep status(String status) {
         this.status = status;
+        return this;
+    }
+    
+    @Override
+     public BuildStep address(String address) {
+        this.address = address;
+        return this;
+    }
+    
+    @Override
+     public BuildStep lattitude(Float lattitude) {
+        this.lattitude = lattitude;
+        return this;
+    }
+    
+    @Override
+     public BuildStep longitude(Float longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+    
+    @Override
+     public BuildStep bucketkey(String bucketkey) {
+        this.bucketkey = bucketkey;
         return this;
     }
     
@@ -225,11 +302,15 @@ public final class Task implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String title, String description, String status, Team taskForTeam) {
+    private CopyOfBuilder(String id, String title, String description, String status, String address, Float lattitude, Float longitude, String bucketkey, Team taskForTeam) {
       super.id(id);
       super.title(title)
         .description(description)
         .status(status)
+        .address(address)
+        .lattitude(lattitude)
+        .longitude(longitude)
+        .bucketkey(bucketkey)
         .taskForTeam(taskForTeam);
     }
     
@@ -246,6 +327,26 @@ public final class Task implements Model {
     @Override
      public CopyOfBuilder status(String status) {
       return (CopyOfBuilder) super.status(status);
+    }
+    
+    @Override
+     public CopyOfBuilder address(String address) {
+      return (CopyOfBuilder) super.address(address);
+    }
+    
+    @Override
+     public CopyOfBuilder lattitude(Float lattitude) {
+      return (CopyOfBuilder) super.lattitude(lattitude);
+    }
+    
+    @Override
+     public CopyOfBuilder longitude(Float longitude) {
+      return (CopyOfBuilder) super.longitude(longitude);
+    }
+    
+    @Override
+     public CopyOfBuilder bucketkey(String bucketkey) {
+      return (CopyOfBuilder) super.bucketkey(bucketkey);
     }
     
     @Override

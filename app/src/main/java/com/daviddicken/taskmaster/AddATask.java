@@ -57,6 +57,7 @@ public class AddATask extends AppCompatActivity {
    FusedLocationProviderClient locationProviderClient;
    Location currentLocation;
    String address;
+   String bucketKey;
    String TAG = "myApp";
 
 
@@ -93,7 +94,7 @@ public class AddATask extends AppCompatActivity {
                 getAndSaveTask(chosenTeam);
 //                getPermission();
 //                configLocation();
-//                getLastLocation();
+                getLastLocation();
                 toastAndGo();
 
             }
@@ -185,7 +186,8 @@ public class AddATask extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            uploadFile(file.getName() + Math.random(), file);
+            bucketKey = file.getName() + Math.random();
+            uploadFile(bucketKey, file);
         }
     }
 
@@ -235,6 +237,8 @@ public class AddATask extends AppCompatActivity {
         Task newThingToDo = Task.builder()
                 .title(name)
                 .description(body)
+                .address(address)
+                .bucketkey(bucketKey)
                 .status("new").taskForTeam(chosenTeam).build();
 
         //========= Send to online db ===========

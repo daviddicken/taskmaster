@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
 import androidx.core.util.ObjectsCompat;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import com.amplifyframework.core.model.Model;
 import com.amplifyframework.core.model.annotations.Index;
@@ -21,14 +18,10 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
 /** This is an auto generated class representing the Team type in your schema. */
 @SuppressWarnings("all")
-@Entity
 @ModelConfig(pluralName = "Teams")
 public final class Team implements Model {
   public static final QueryField ID = field("id");
   public static final QueryField NAME = field("name");
-
-  @NonNull
-  @PrimaryKey
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String name;
   private final @ModelField(targetType="Task") @HasMany(associatedWith = "taskForTeam", type = Task.class) List<Task> Tasks = null;
@@ -44,7 +37,7 @@ public final class Team implements Model {
       return Tasks;
   }
   
-  public Team(String id, String name) {
+  private Team(String id, String name) {
     this.id = id;
     this.name = name;
   }
