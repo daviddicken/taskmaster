@@ -5,6 +5,10 @@ subscription OnCreateTask {
     title
     description
     status
+    address
+    lattitude
+    longitude
+    bucketkey
     taskForTeam {
       id
       name
@@ -31,6 +35,10 @@ subscription OnUpdateTask {
     title
     description
     status
+    address
+    lattitude
+    longitude
+    bucketkey
     taskForTeam {
       id
       name
@@ -57,6 +65,10 @@ subscription OnDeleteTask {
     title
     description
     status
+    address
+    lattitude
+    longitude
+    bucketkey
     taskForTeam {
       id
       name
@@ -87,6 +99,10 @@ subscription OnCreateTeam {
         title
         description
         status
+        address
+        lattitude
+        longitude
+        bucketkey
         _version
         _deleted
         _lastChangedAt
@@ -113,6 +129,10 @@ subscription OnUpdateTeam {
         title
         description
         status
+        address
+        lattitude
+        longitude
+        bucketkey
         _version
         _deleted
         _lastChangedAt
@@ -139,6 +159,10 @@ subscription OnDeleteTeam {
         title
         description
         status
+        address
+        lattitude
+        longitude
+        bucketkey
         _version
         _deleted
         _lastChangedAt

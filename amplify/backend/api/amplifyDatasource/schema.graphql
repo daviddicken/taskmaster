@@ -3,8 +3,13 @@ type Task @model {
   title: String!
   description: String
   status: String
+  address: String
+  lattitude: Float
+  longitude: Float
+  bucketkey: String
   taskForTeam: Team @connection(name: "teamsTasks")
 }
+
 
 type Team @model {
   id: ID!

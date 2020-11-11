@@ -2,10 +2,17 @@ package com.daviddicken.taskmaster;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUtils;
@@ -24,6 +31,11 @@ import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,6 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 public class AddATask extends AppCompatActivity {
@@ -41,9 +55,15 @@ public class AddATask extends AppCompatActivity {
    ArrayList<Team> teams = new ArrayList<>();
    Toast toast;
    String lastFileUploadedKey;
+   FusedLocationProviderClient locationProviderClient;
+   Location currentLocation;
+   String address;
+   String bucketKey;
+   String TAG = "myApp";
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +78,22 @@ public class AddATask extends AppCompatActivity {
 
         queryTeams();
         createToast();
+        getPermission();
+        configLocation();
+        getLastLocation();
+
+        //========== Stuff for receiving image =========
+        //Thank you Jack and Kamit
+        Intent intent = getIntent();
+        if(intent.getType() != null) {
+            ImageView img = findViewById(R.id.img);
+            //intent.getData();
+            img.setImageURI(intent.getClipData().getItemAt(0).getUri());
+            putInBucket(intent.getClipData().getItemAt(0).getUri());
+        }
+        //intent.getClipData().getItemAt(0).getUri()
+
+
 
         //========== Add pic Button and Listener =========
         Button addPic = AddATask.this.findViewById(R.id.addImg);
@@ -71,10 +107,73 @@ public class AddATask extends AppCompatActivity {
 
                 Team chosenTeam = getTeam();
                 getAndSaveTask(chosenTeam);
+//                getPermission();
+//                configLocation();
+                getLastLocation();
                 toastAndGo();
+
             }
         });
 
+    }
+
+    //================ ask permission ===========================
+    public void getPermission(){
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+    }
+
+    //=============== Configure location Services ================
+    public void configLocation(){
+        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    //================ get location ==============================
+    public void getLastLocation(){
+        System.out.println("stepped into get last");
+        //======================================================================================================
+        // This code should be ran on actual phone after testing is complete ===================================
+//        locationProviderClient.getLastLocation()
+//                .addOnSuccessListener(location -> Log.i(TAG + ".locSuccess", location.toString()))
+//                .addOnFailureListener(error -> Log.e(TAG + ".locFailure", error.toString()))
+//                .addOnCanceledListener(() -> Log.e(TAG + ".locCancel", "canceled"))
+//                .addOnCompleteListener(complete -> Log.i(TAG + ".locComplete", complete.toString()));
+//===============================================================================================================
+        //Use code below for testing a moving location ==========================================================
+        LocationRequest locationRequest = null;
+
+        locationRequest = locationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000);
+        
+        LocationCallback locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult){
+                if(locationResult == null) {
+                    return;
+                }
+                currentLocation = locationResult.getLastLocation();
+                Log.i(TAG, currentLocation.toString());
+
+                Geocoder geocoder = new Geocoder(AddATask.this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(),10);
+                    address =addresses.get(0).getAddressLine(0);
+                    Log.i(TAG + ".address", address);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.
+                permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            Toast toast = new Toast(this);
+            toast.setText("Please accept location permission");
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        locationProviderClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
     }
 
     //================ retrieve file s3 ==========================
@@ -88,6 +187,7 @@ public class AddATask extends AppCompatActivity {
         startActivityForResult(getPicIntent, 1);
     }
 
+    //=============== On Activity for S3 ========================
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onActivityResult(int reqCode, int resultCode, Intent data) {
@@ -95,15 +195,31 @@ public class AddATask extends AppCompatActivity {
 
         if(reqCode == 1){
             Log.i("Amplify.picImg", "Got an image back");
-            File file = new File(getFilesDir(), "testFile");
-            try {
-                InputStream inStream = getContentResolver().openInputStream(data.getData());
-                FileUtils.copy(inStream, new FileOutputStream(file));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            uploadFile(file.getName() + Math.random(), file);
+            putInBucket(data.getData());
+//            File file = new File(getFilesDir(), "testFile");
+//            try {
+//                InputStream inStream = getContentResolver().openInputStream(data.getData());
+//                FileUtils.copy(inStream, new FileOutputStream(file));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            bucketKey = file.getName() + Math.random();
+//            uploadFile(bucketKey, file);
         }
+    }
+
+    //================ save to s3 ================================
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void putInBucket(Uri uri){
+        File file = new File(getFilesDir(), "testFile");
+        try {
+            InputStream inStream = getContentResolver().openInputStream(uri);
+            FileUtils.copy(inStream, new FileOutputStream(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bucketKey = file.getName() + Math.random();
+        uploadFile(bucketKey, file);
     }
 
     //================ download file S3 ===========================
@@ -152,6 +268,8 @@ public class AddATask extends AppCompatActivity {
         Task newThingToDo = Task.builder()
                 .title(name)
                 .description(body)
+                .address(address)
+                .bucketkey(bucketKey)
                 .status("new").taskForTeam(chosenTeam).build();
 
         //========= Send to online db ===========

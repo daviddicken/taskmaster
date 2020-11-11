@@ -30,6 +30,10 @@ android {
 }
 
 dependencies {
+    //location
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'androidx.activity:activity:1.2.0-beta01'
+
     // cloud messaging
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
 

@@ -8,6 +8,10 @@ mutation CreateTask(
     title
     description
     status
+    address
+    lattitude
+    longitude
+    bucketkey
     taskForTeam {
       id
       name
@@ -37,6 +41,10 @@ mutation UpdateTask(
     title
     description
     status
+    address
+    lattitude
+    longitude
+    bucketkey
     taskForTeam {
       id
       name
@@ -66,6 +74,10 @@ mutation DeleteTask(
     title
     description
     status
+    address
+    lattitude
+    longitude
+    bucketkey
     taskForTeam {
       id
       name
@@ -99,6 +111,10 @@ mutation CreateTeam(
         title
         description
         status
+        address
+        lattitude
+        longitude
+        bucketkey
         _version
         _deleted
         _lastChangedAt
@@ -128,6 +144,10 @@ mutation UpdateTeam(
         title
         description
         status
+        address
+        lattitude
+        longitude
+        bucketkey
         _version
         _deleted
         _lastChangedAt
@@ -157,6 +177,10 @@ mutation DeleteTeam(
         title
         description
         status
+        address
+        lattitude
+        longitude
+        bucketkey
         _version
         _deleted
         _lastChangedAt
