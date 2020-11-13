@@ -40,6 +40,9 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 //import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     RecyclerView recyclerView;
     Handler handler;
     Handler signedInHandler;
+    AdView mAdview;
 
     //================ Pin Point =============================
     public static final String TAG = "Amplify";
@@ -84,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
         populateRecycler();
         populateViews();
         analyticsEvent("OpenedApp", "User has opened the app");
+        MobileAds.initialize(this);
+        mAdview = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdview.loadAd(adRequest);
 
     }
 
@@ -98,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
     }
 
 
-    //=============== event creater ==========================
+    //=============== event creator ==========================
     public void analyticsEvent(String nameOfEvent, String message) {
         AnalyticsEvent event = AnalyticsEvent.builder()
                 .name(nameOfEvent)
@@ -278,6 +286,14 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.OnInt
 
     //================= Buttons =====================
     public void setupButtons() {
+//        //log out---------------------------
+//        Button logout = findViewById(R.id.logOut);
+//        logout.setOnClickListener(view ->
+//            Amplify.Auth.signOut(()->{
+//                    Log.i("Amplify.logout", "logged out");
+//                    this.startActivity(new Intent(this, LogIn.class));
+//                },
+//                error -> Log.e("Amplify.logout", error.toString())));
 
         // log in---------------------------
         Button login = findViewById(R.id.logIn);
