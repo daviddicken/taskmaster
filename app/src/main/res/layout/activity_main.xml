@@ -43,7 +43,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.407" />
+        app:layout_constraintVertical_bias="0.172" />
 
     <Button
         android:id="@+id/allTasks"
@@ -55,7 +55,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/addTask"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.407" />
+        app:layout_constraintVertical_bias="0.172" />
 
     <TextView
         android:id="@+id/theName"
@@ -119,5 +119,27 @@
         app:layout_constraintBottom_toBottomOf="@+id/logIn"
         app:layout_constraintStart_toEndOf="@+id/logIn"
         app:layout_constraintTop_toTopOf="@+id/logIn" />
+
+    <Button
+        android:id="@+id/logOut"
+        android:layout_width="73dp"
+        android:layout_height="36dp"
+        android:text="Log Out"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintBottom_toTopOf="@+id/signUp"
+        app:layout_constraintEnd_toStartOf="@+id/goToSettings"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></com.google.android.gms.ads.AdView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

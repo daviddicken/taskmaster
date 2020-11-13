@@ -30,14 +30,17 @@ android {
 }
 
 dependencies {
+    // ads
+    implementation 'com.google.android.gms:play-services-ads:19.5.0'
+
     //location
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'androidx.activity:activity:1.2.0-beta01'
 
     // cloud messaging
-    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
-    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-core:18.0.0'
     implementation 'com.google.firebase:firebase-messaging:17.3.0'
 
     implementation 'com.amazonaws:aws-android-sdk-pinpoint:2.11.+'
