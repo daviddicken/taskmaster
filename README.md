@@ -60,7 +60,7 @@ displayed on thingToDo details activity
 Day 6
 Changed database that the app was saving to and reading from to an online database (DynamoDB).
 
-![Screenshot day 6](screenshots/day6Screenshot.PNG)
+![Screenshot day 6](screenshots\day6screenshot.PNG)
 
 ----------------------
 ## 10/28/2020
