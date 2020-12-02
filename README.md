@@ -69,7 +69,7 @@ Day 7
 Added three teams and the ability to assign new tasks to a team. And the ability for a user to select
 a team when the enter their name. Only the task for that users team will be displayed on the main page.
 
-![Screenshot day 7](screenshots/day7Screenshot.PNG)
+![Screenshot day 7](screenshots/day7screenshot.PNG)
 
 ---------------------
 ## 11/4/2020
